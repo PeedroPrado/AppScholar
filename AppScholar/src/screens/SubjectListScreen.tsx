@@ -5,43 +5,42 @@ import {
 } from 'react-native';
 import { useData } from '../context/DataContext';
 import { useNavigation } from '@react-navigation/native';
-import { Student } from '../types';
-import { theme } from '../style/theme'
+import { Subject } from '../types';
+import { theme } from '../style/theme';
 import { useAuth } from '../context/AuthContext';
 
-function StudentCard({
-  student,
+function SubjectCard({
+  subject,
   onDelete,
 }: {
-  student: Student;
+  subject: Subject;
   onDelete: (id: string) => void;
 }) {
   function confirmDelete() {
     Alert.alert(
-      'Remover aluno',
-      `Deseja remover "${student.name}"?`,
+      'Remover disciplina',
+      `Deseja remover "${subject.name}"?`,
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Remover', style: 'destructive', onPress: () => onDelete(student.id) },
+        { text: 'Remover', style: 'destructive', onPress: () => onDelete(subject.id) },
       ]
     );
   }
 
   return (
     <View style={styles.card}>
-      {/* Avatar com inicial do nome */}
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-          {student.name.charAt(0).toUpperCase()}
+          {subject.name.charAt(0).toUpperCase()}
         </Text>
       </View>
 
       <View style={styles.cardInfo}>
-        <Text style={styles.cardName}>{student.name}</Text>
-        <Text style={styles.cardSub}>🎓 {student.enrollment}</Text>
-        <Text style={styles.cardSub}>📚 {student.course}</Text>
-        <Text style={styles.cardSub}>📧 {student.email}</Text>
-        <Text style={styles.cardSub}>📍 {student.city} - {student.state}</Text>
+        <Text style={styles.cardName}>{subject.name}</Text>
+        <Text style={styles.cardSub}>📚 {subject.course}</Text>
+        <Text style={styles.cardSub}>🗓 Semestre {subject.semester}</Text>
+        <Text style={styles.cardSub}>⏱ {subject.workload}h</Text>
+        <Text style={styles.cardSub}>👨‍🏫 Professor ID: {subject.teacherId}</Text>
       </View>
 
       <TouchableOpacity onPress={confirmDelete} style={styles.deleteBtn}>
@@ -51,66 +50,68 @@ function StudentCard({
   );
 }
 
-export function StudentListScreen() {
-  const { students, removeStudent } = useData();
+export function SubjectListScreen() {
+  const { subjects, removeSubject } = useData();
   const navigation = useNavigation<any>();
   const [search, setSearch] = useState('');
+   const { user } = useAuth();   // adicionar isso
 
-  // Filtra por nome ou matrícula em tempo real
-  const filtered = students.filter(s =>
+  const filtered = subjects.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
-    s.enrollment.toLowerCase().includes(search.toLowerCase())
+    s.course.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <View style={styles.container}>
-      {/* Barra de busca */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="🔍 Buscar por nome ou matrícula..."
+          placeholder="🔍 Buscar disciplina..."
           placeholderTextColor={theme.colors.textLight}
           value={search}
           onChangeText={setSearch}
         />
       </View>
 
-      {/* Contador */}
       <Text style={styles.counter}>
-        {filtered.length} aluno{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
+        {filtered.length} disciplina{filtered.length !== 1 ? 's' : ''} encontrada{filtered.length !== 1 ? 's' : ''}
       </Text>
 
       <FlatList
         data={filtered}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <StudentCard student={item} onDelete={removeStudent} />
+          <SubjectCard subject={item} onDelete={removeSubject} />
         )}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text style={styles.emptyIcon}>🎓</Text>
+            <Text style={styles.emptyIcon}>📚</Text>
             <Text style={styles.emptyText}>
-              {search ? 'Nenhum aluno encontrado' : 'Nenhum aluno cadastrado ainda'}
+              {search ? 'Nenhuma disciplina encontrada' : 'Nenhuma disciplina cadastrada'}
             </Text>
-            <TouchableOpacity
-              style={styles.emptyBtn}
-              onPress={() => navigation.navigate('StudentForm')}
-            >
-              <Text style={styles.emptyBtnText}>+ Cadastrar primeiro aluno</Text>
-            </TouchableOpacity>
+
+            {user?.role === 'admin' && (
+              <TouchableOpacity
+                style={styles.emptyBtn}
+                onPress={() => navigation.navigate('SubjectForm')}
+              >
+                <Text style={styles.emptyBtnText}>
+                  + Cadastrar primeira disciplina
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         }
       />
 
-      {/* Botão flutuante para novo cadastro */}
-      {students.length > 0 && (
+      {subjects.length > 0 && user?.role === 'admin' && (
         <TouchableOpacity
           style={styles.fab}
-          onPress={() => navigation.navigate('StudentForm')}
+          onPress={() => navigation.navigate('SubjectForm')}
           activeOpacity={0.85}
         >
-          <Text style={styles.fabText}>+ Novo Aluno</Text>
+          <Text style={styles.fabText}>+ Nova Disciplina</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -148,9 +149,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
   },
   avatar: {
     width: 48,
@@ -189,7 +187,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.xl,
     borderRadius: theme.borderRadius.sm,
   },
-  emptyBtnText: { color: '#fff', fontWeight: '700', fontSize: theme.fontSize.md },
+  emptyBtnText: { color: '#fff', fontWeight: '700' },
   fab: {
     position: 'absolute',
     bottom: theme.spacing.xl,
@@ -198,10 +196,6 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.lg,
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
   },
-  fabText: { color: '#fff', fontWeight: '700', fontSize: theme.fontSize.md },
+  fabText: { color: '#fff', fontWeight: '700' },
 });

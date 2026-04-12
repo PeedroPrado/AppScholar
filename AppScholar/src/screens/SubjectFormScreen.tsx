@@ -7,6 +7,8 @@ import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { theme } from '../style/theme';
 import { Subject, Teacher } from '../types';
+import { useData } from '../context/DataContext';
+
 
 function generateId(): string {
   return Math.random().toString(36).substring(2, 9).toUpperCase();
@@ -30,6 +32,7 @@ const EMPTY_FORM = {
 };
 
 export function SubjectFormScreen() {
+  const { addSubject } = useData();
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState<Partial<typeof EMPTY_FORM>>({});
   const [loading, setLoading] = useState(false);
@@ -85,10 +88,11 @@ export function SubjectFormScreen() {
       workload: Number(form.workload),
       teacherId: form.teacherId,
       course: form.course,
-      semester: Number(form.semester.charAt(0)), // Extrai o número do semestre
+      semester: Number(form.semester.charAt(0)),
     };
 
-    console.log('Disciplina cadastrada:', newSubject);
+    addSubject(newSubject);
+
     setLoading(false);
     Alert.alert(
       'Sucesso! 📖',

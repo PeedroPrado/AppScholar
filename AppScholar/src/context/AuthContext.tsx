@@ -3,11 +3,23 @@ import { User } from '../types';
 import { saveSecure, getSecure, removeSecure } from '../services/secureStorage';
 
 // Usuário mockado para simular o login
-const MOCK_USER: User = {
+const MOCK_USERS: User[] = [
+  {
     email: 'admin@fatec.sp.gov.br',
     name: 'Administrador',
     role: 'admin',
-};
+  },
+  {
+    email: 'aluno@fatec.sp.gov.br',
+    name: 'João da Silva',
+    role: 'student',
+  },
+  {
+    email: 'professor@fatec.sp.gov.br',
+    name: 'Prof. André Olímpio',
+    role: 'teacher',
+  }
+];
 
 interface AuthContextData {
     user: User | null;
@@ -35,15 +47,21 @@ export function AuthProvider ({ children }: {children: React.ReactNode }) {
         loadSession();
     }, []);
 
-    async function signIn(email: string, password: string): Promise <boolean>{
-        //validação mockada
-        if (email === 'admin@fatec.sp.gov.br' && password === '1234') {
-            await saveSecure('user_session', JSON.stringify(MOCK_USER));
-            setUser(MOCK_USER);
-            return true;
-        }
-        return false; 
+    async function signIn(email: string, password: string): Promise<boolean> {
+    // senha mock única
+    if (password !== '1234') return false;
+
+    const user = MOCK_USERS.find(u => u.email === email);
+
+    if (user) {
+        await saveSecure('user_session', JSON.stringify(user));
+        setUser(user);
+        return true;
     }
+
+    return false;
+}
+
     async function signOut(){
         await removeSecure('user_session');
         setUser(null);

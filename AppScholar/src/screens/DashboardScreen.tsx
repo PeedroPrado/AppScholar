@@ -4,46 +4,118 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 import { theme } from "../style/theme";
 
+type Role = 'admin' | 'student' | 'teacher';
+
+type MenuItem = {
+  label: string;
+  icon: string;
+  route: string;
+  roles: Role[];
+};
+
 const menuItems = [
-  { label: 'Cadastrar Aluno',          icon: '🎓', route: 'StudentForm' },
-  { label: 'Lista de Alunos',          icon: '📋', route: 'StudentList' },
-  { label: 'Cadastrar Professor',      icon: '👨‍🏫', route: 'TeacherForm' },
-  { label: 'Lista de Professores',     icon: '📋', route: 'TeacherList' },
-  { label: 'Cadastrar Disciplina',     icon: '📖', route: 'SubjectForm' },
-  { label: 'Visualizar Boletim',       icon: '📊', route: 'Grades'      },
+  {
+    label: "Cadastrar Alunos",
+    icon: "👨‍🎓",
+    route: "StudentForm",
+    roles: ["admin"]
+  },
+  {
+    label: "Lista de Alunos",
+    icon: "📋",
+    route: "StudentList",
+    roles: ["admin", "teacher"]
+  },
+  {
+    label: "Cadastrar Professores",
+    icon: "👨‍🏫",
+    route: "TeacherForm",
+    roles: ["admin"]
+  },
+  {
+    label: "Lista de Professores",
+    icon: "📋",
+    route: "TeacherList",
+    roles: ["admin"]
+  },
+  {
+    label: "Cadastrar Disciplinas",
+    icon: "📚",
+    route: "SubjectForm",
+    roles: ["admin"]
+  },
+  {
+    label: "Boletim",
+    icon: "📄",
+    route: "Grades",
+    roles: ["student"]
+  },
+  {
+    label: "Disciplinas",
+    icon: "📚",
+    route: "SubjectList",
+    roles: ["admin", "teacher", "student"]
+  }
 ];
 
 export function DashboardScreen() {
     const { user, signOut } = useAuth();
     const navigation = useNavigation<any>();
 
-    return (
-        <ScrollView style={styles.container}>
+    const roleLabel =
+        user?.role === 'student'
+            ? 'Aluno'
+            : user?.role === 'teacher'
+            ? 'Professor'
+            : 'Administrador';
+
+  return (
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 120 }}
+    >
             <View style={styles.header}>
-                <Text style ={styles.greeting}>Olá, {user?.name}👋</Text>
-                <Text style ={styles.role}> {user?.email} </Text>
-                </View>
+                <Text style={styles.greeting}>
+                    Olá, {user?.name} 👋
+                </Text>
 
-                <Text style={styles.sectionTitle}>Menu Principal</Text>
-      <View style={styles.grid}>
-        {menuItems.map((item) => (
-          <TouchableOpacity
-            key={item.route}
-            style={styles.card}
-            onPress={() => navigation.navigate(item.route)}
-            activeOpacity={0.75}
-          >
-            <Text style={styles.icon}>{item.icon}</Text>
-            <Text style={styles.cardLabel}>{item.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+                <Text style={styles.role}>
+                    {user?.email}
+                </Text>
 
-      <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
-        <Text style={styles.logoutText}>Sair do aplicativo</Text>
+                <Text style={styles.role}>
+                    Perfil: {roleLabel}
+                </Text>
+            </View>
+
+            <Text style={styles.sectionTitle}>Menu Principal</Text>
+
+        <View style={styles.grid}>
+          {menuItems
+            .filter(item => item.roles.includes(user!.role))
+            .map((item) => (
+              <TouchableOpacity
+                key={item.route}
+                style={styles.card}
+                onPress={() => navigation.navigate(item.route)}
+                activeOpacity={0.75}
+              >
+                <Text style={styles.icon}>{item.icon}</Text>
+                <Text style={styles.cardLabel}>{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+        </View>
+
+      <TouchableOpacity
+        style={styles.logoutBtn}
+        onPress={() => signOut()}
+      >
+        <Text style={styles.logoutText}>
+          Sair do aplicativo
+        </Text>
       </TouchableOpacity>
-    </ScrollView>
-  );
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({

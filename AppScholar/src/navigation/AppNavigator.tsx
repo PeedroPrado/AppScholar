@@ -13,6 +13,7 @@ import { GradesScreen } from '../screens/GradesScreen';
 import { theme } from '../style/theme';
 import { StudentListScreen } from '../screens/StudentListScreen';
 import { TeacherListScreen } from '../screens/TeacherListScreen';
+import { SubjectListScreen } from '../screens/SubjectListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,12 @@ export function AppNavigator() {
             <Stack.Screen name="TeacherForm" component={TeacherFormScreen} options={{ title: 'Cadastro de Professor' }} />
             <Stack.Screen name="TeacherList" component={TeacherListScreen} options={{ title: 'Professores Cadastrados' }} />
             <Stack.Screen name="SubjectForm" component={SubjectFormScreen} options={{ title: 'Cadastro de Disciplina' }} />
+            <Stack.Screen
+              name="SubjectList"
+              component={SubjectListScreen}
+              options={{ title: 'Disciplinas Cadastradas' }}
+            />
+
             <Stack.Screen name="Grades" component={GradesScreen} options={{ title: 'Boletim' }} />
           </>
         ) : (
