@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
-import { theme } from '../style/theme';
+import { theme } from '../styles/theme';
 import { Subject, Teacher } from '../types';
 import { useData } from '../context/DataContext';
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { Grade } from '../types';
-import { theme } from '../style/theme';
+import { theme } from '../styles/theme';
 
 const MOCK_GRADES: Grade [] = [
     { id: '1', subjectName: 'Programação Mobile I', grade1: 8.5, grade2: 9.0, average: 8.75, status: 'Aprovado' },
@@ -12,7 +12,7 @@ const MOCK_GRADES: Grade [] = [
 
 function GradeCard({ item }: {item: Grade }) {
     const statusColor =
-        item.status === 'Aprovado' ? theme.colors.sucess :
+        item.status === 'Aprovado' ? theme.colors.success :
         item.status === 'Reprovado' ? theme.colors.error :
         theme.colors.accent;
 

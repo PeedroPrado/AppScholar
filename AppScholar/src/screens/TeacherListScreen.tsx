@@ -6,7 +6,8 @@ import {
 import { useData } from '../context/DataContext';
 import { useNavigation } from '@react-navigation/native';
 import { Teacher } from '../types';
-import { theme } from '../style/theme';
+import { theme } from '../styles/theme';
+import { useSearch } from '../hooks/useSearch';
 
 // Badge colorido por titulação
 const TITLE_COLORS: Record<string, string> = {
@@ -72,13 +73,7 @@ function TeacherCard({
 export function TeacherListScreen() {
   const { teachers, removeTeacher } = useData();
   const navigation = useNavigation<any>();
-  const [search, setSearch] = useState('');
-
-  const filtered = teachers.filter(t =>
-    t.name.toLowerCase().includes(search.toLowerCase()) ||
-    t.area.toLowerCase().includes(search.toLowerCase()) ||
-    t.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const { search, setSearch, filtered } = useSearch(teachers, ['name', 'area', 'title']);
 
   return (
     <View style={styles.container}>

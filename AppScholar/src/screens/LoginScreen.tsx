@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {
     View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert
 } from 'react-native';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
-import { theme } from '../style/theme';
+import { theme } from '../styles/theme';
 
 export function LoginScreen () {
     const { signIn } = useAuth();

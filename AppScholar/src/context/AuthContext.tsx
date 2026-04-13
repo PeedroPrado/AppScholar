@@ -1,6 +1,7 @@
 import React, {createContext, useState, useEffect, useContext } from 'react';
 import { User } from '../types';
 import { saveSecure, getSecure, removeSecure } from '../services/secureStorage';
+import { useAuth } from '../hooks/useAuth';
 
 // Usuário mockado para simular o login
 const MOCK_USERS: User[] = [
@@ -74,9 +75,3 @@ export function AuthProvider ({ children }: {children: React.ReactNode }) {
     );
 }
     
-
-//Hook costumizado para o uso em qualquer tela
-
-export function useAuth() {
-    return useContext(AuthContext);
-}

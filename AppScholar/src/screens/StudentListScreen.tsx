@@ -6,8 +6,9 @@ import {
 import { useData } from '../context/DataContext';
 import { useNavigation } from '@react-navigation/native';
 import { Student } from '../types';
-import { theme } from '../style/theme'
-import { useAuth } from '../context/AuthContext';
+import { theme } from '../styles/theme'
+import { useAuth } from '../hooks/useAuth';
+import { useSearch } from '../hooks/useSearch';
 
 function StudentCard({
   student,
@@ -54,14 +55,8 @@ function StudentCard({
 export function StudentListScreen() {
   const { students, removeStudent } = useData();
   const navigation = useNavigation<any>();
-  const [search, setSearch] = useState('');
-
-  // Filtra por nome ou matrícula em tempo real
-  const filtered = students.filter(s =>
-    s.name.toLowerCase().includes(search.toLowerCase()) ||
-    s.enrollment.toLowerCase().includes(search.toLowerCase())
-  );
-
+  const { search, setSearch, filtered } = useSearch(students, ['name', 'enrollment']);
+  
   return (
     <View style={styles.container}>
       {/* Barra de busca */}

@@ -3,14 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { LoginScreen } from '../screens/LoginScreen';
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { StudentFormScreen } from '../screens/StudentFormScreen';
 import { TeacherFormScreen } from '../screens/TeacherFormScreen';
 import { SubjectFormScreen } from '../screens/SubjectFormScreen';
 import { GradesScreen } from '../screens/GradesScreen';
-import { theme } from '../style/theme';
+import { theme } from '../styles/theme';
 import { StudentListScreen } from '../screens/StudentListScreen';
 import { TeacherListScreen } from '../screens/TeacherListScreen';
 import { SubjectListScreen } from '../screens/SubjectListScreen';

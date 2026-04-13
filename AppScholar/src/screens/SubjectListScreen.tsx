@@ -6,8 +6,9 @@ import {
 import { useData } from '../context/DataContext';
 import { useNavigation } from '@react-navigation/native';
 import { Subject } from '../types';
-import { theme } from '../style/theme';
-import { useAuth } from '../context/AuthContext';
+import { theme } from '../styles/theme';
+import { useAuth } from '../hooks/useAuth';
+import { useSearch } from '../hooks/useSearch';
 
 function SubjectCard({
   subject,
@@ -53,13 +54,9 @@ function SubjectCard({
 export function SubjectListScreen() {
   const { subjects, removeSubject } = useData();
   const navigation = useNavigation<any>();
-  const [search, setSearch] = useState('');
-   const { user } = useAuth();   // adicionar isso
+  const { search, setSearch, filtered } = useSearch(subjects, ['name', 'course']);
+   const { user } = useAuth();   
 
-  const filtered = subjects.filter(s =>
-    s.name.toLowerCase().includes(search.toLowerCase()) ||
-    s.course.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
     <View style={styles.container}>
