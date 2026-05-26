@@ -1,77 +1,123 @@
-import React, {createContext, useState, useEffect, useContext } from 'react';
-import { User } from '../types';
-import { saveSecure, getSecure, removeSecure } from '../services/secureStorage';
-import { useAuth } from '../hooks/useAuth';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+} from "react";
 
-// Usuário mockado para simular o login
-const MOCK_USERS: User[] = [
-  {
-    email: 'admin@fatec.sp.gov.br',
-    name: 'Administrador',
-    role: 'admin',
-  },
-  {
-    email: 'aluno@fatec.sp.gov.br',
-    name: 'João da Silva',
-    role: 'student',
-  },
-  {
-    email: 'professor@fatec.sp.gov.br',
-    name: 'Prof. André Olímpio',
-    role: 'teacher',
-  }
-];
+import { User } from "../types";
+
+import {
+  saveSecure,
+  getSecure,
+  removeSecure,
+} from "../services/secureStorage";
+
+import { login } from "../services/authService";
 
 interface AuthContextData {
-    user: User | null;
-    isLoading: boolean;
-    signIn: (email: string, password: string) => Promise<boolean>;
-    signOut: () => Promise <void>;
+  user: User | null;
+  isLoading: boolean;
+
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<boolean>;
+
+  signOut: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+export const AuthContext =
+  createContext<AuthContextData>(
+    {} as AuthContextData
+  );
 
-export function AuthProvider ({ children }: {children: React.ReactNode }) {
-    const [user, setUser ] = useState<User | null> (null);
-    const [isLoading, setIsLoading ] = useState (true);
+interface Props {
+  children: React.ReactNode;
+}
 
-    //useEffect para verificar se existe sessão salva
+export function AuthProvider({
+  children,
+}: Props) {
 
-    useEffect(() => {
-        async function loadSession () {
-            const savedUser = await getSecure('user_session');
-            if (savedUser) {
-                setUser(JSON.parse(savedUser))
-            }
-            setIsLoading(false);
-        }
-        loadSession();
-    }, []);
+  const [user, setUser] =
+    useState<User | null>(null);
 
-    async function signIn(email: string, password: string): Promise<boolean> {
-    // senha mock única
-    if (password !== '1234') return false;
+  const [isLoading, setIsLoading] =
+    useState(true);
 
-    const user = MOCK_USERS.find(u => u.email === email);
+  // Verifica sessão salva
 
-    if (user) {
-        await saveSecure('user_session', JSON.stringify(user));
-        setUser(user);
-        return true;
+  useEffect(() => {
+
+    async function loadSession() {
+
+      const savedUser =
+        await getSecure("user_session");
+
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+
+      setIsLoading(false);
     }
 
-    return false;
-}
+    loadSession();
 
-    async function signOut(){
-        await removeSecure('user_session');
-        setUser(null);
+  }, []);
+
+  async function signIn(
+    email: string,
+    password: string
+  ): Promise<boolean> {
+
+    try {
+
+      const response = await login({
+        email,
+        senha: password,
+      });
+
+      setUser(response.usuario);
+
+      await saveSecure(
+        "token",
+        response.token
+      );
+
+      await saveSecure(
+        "user_session",
+        JSON.stringify(response.usuario)
+      );
+
+      return true;
+
+    } catch (error) {
+
+      console.log(error);
+
+      return false;
     }
+  }
 
-    return(
-        <AuthContext.Provider value = {{ user, isLoading, signIn, signOut }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  async function signOut() {
+
+    await removeSecure("token");
+
+    await removeSecure("user_session");
+
+    setUser(null);
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        signIn,
+        signOut,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
-    
