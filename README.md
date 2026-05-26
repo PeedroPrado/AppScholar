@@ -37,6 +37,14 @@ Pode:
 
 ---
 
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=123
+DB_NAME=app_scholar
+
+JWT_SECRET=appscholar_secret
+
 ## 👨‍🏫 Professor
 
 Pode:
