@@ -4,37 +4,37 @@ import { Grade } from '../types';
 import { theme } from '../styles/theme';
 
 const MOCK_GRADES: Grade [] = [
-    { id: '1', subjectName: 'Programação Mobile I', grade1: 8.5, grade2: 9.0, average: 8.75, status: 'Aprovado' },
-  { id: '2', subjectName: 'Banco de Dados',       grade1: 6.0, grade2: 7.5, average: 6.75, status: 'Aprovado' },
-  { id: '3', subjectName: 'Laboratório de Desenvolvimento Web',grade1: 4.0, grade2: 5.5, average: 4.75, status: 'Reprovado' },
-  { id: '4', subjectName: 'Redes de Computadores', grade1: 7.0, grade2: 8.0, average: 7.50, status: 'Em andamento' },
+    { id: '1', disciplina: 'Programação Mobile I', nota1: 8.5, nota2: 9.0, media: 8.75, situacao: 'Aprovado' },
+  { id: '2', disciplina: 'Banco de Dados',       nota1: 6.0, nota2: 7.5, media: 6.75, situacao: 'Aprovado' },
+  { id: '3', disciplina: 'Laboratório de Desenvolvimento Web',nota1: 4.0, nota2: 5.5, media: 4.75, situacao: 'Reprovado' },
+  { id: '4', disciplina: 'Redes de Computadores', nota1: 7.0, nota2: 8.0, media: 7.50, situacao: 'Em andamento' },
 ];
 
 function GradeCard({ item }: {item: Grade }) {
     const statusColor =
-        item.status === 'Aprovado' ? theme.colors.success :
-        item.status === 'Reprovado' ? theme.colors.error :
+        item.situacao === 'Aprovado' ? theme.colors.success :
+        item.situacao === 'Reprovado' ? theme.colors.error :
         theme.colors.accent;
 
     return (
     <View style={styles.card}>
-      <Text style={styles.subjectName}>{item.subjectName}</Text>
+      <Text style={styles.subjectName}>{item.disciplina}</Text>
       <View style={styles.row}>
         <View style={styles.gradeBox}>
           <Text style={styles.gradeLabel}>Nota 1</Text>
-          <Text style={styles.gradeValue}>{item.grade1.toFixed(1)}</Text>
+          <Text style={styles.gradeValue}>{item.nota1.toFixed(1)}</Text>
         </View>
         <View style={styles.gradeBox}>
           <Text style={styles.gradeLabel}>Nota 2</Text>
-          <Text style={styles.gradeValue}>{item.grade2.toFixed(1)}</Text>
+          <Text style={styles.gradeValue}>{item.nota2.toFixed(1)}</Text>
         </View>
         <View style={styles.gradeBox}>
           <Text style={styles.gradeLabel}>Média</Text>
-          <Text style={[styles.gradeValue, { color: statusColor }]}>{item.average.toFixed(1)}</Text>
+          <Text style={[styles.gradeValue, { color: statusColor }]}>{item.media.toFixed(1)}</Text>
         </View>
       </View>
       <View style={[styles.statusBadge, { backgroundColor: statusColor + '22' }]}>
-        <Text style={[styles.statusText, { color: statusColor }]}>{item.status}</Text>
+        <Text style={[styles.statusText, { color: statusColor }]}>{item.situacao}</Text>
       </View>
     </View>
   );

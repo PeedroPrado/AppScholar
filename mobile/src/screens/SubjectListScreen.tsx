@@ -20,7 +20,7 @@ function SubjectCard({
   function confirmDelete() {
     Alert.alert(
       'Remover disciplina',
-      `Deseja remover "${subject.name}"?`,
+      `Deseja remover "${subject.nome}"?`,
       [
         { text: 'Cancelar', style: 'cancel' },
         { text: 'Remover', style: 'destructive', onPress: () => onDelete(subject.id) },
@@ -32,16 +32,16 @@ function SubjectCard({
     <View style={styles.card}>
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-          {subject.name.charAt(0).toUpperCase()}
+          {subject.nome.charAt(0).toUpperCase()}
         </Text>
       </View>
 
       <View style={styles.cardInfo}>
-        <Text style={styles.cardName}>{subject.name}</Text>
-        <Text style={styles.cardSub}>📚 {subject.course}</Text>
-        <Text style={styles.cardSub}>🗓 Semestre {subject.semester}</Text>
-        <Text style={styles.cardSub}>⏱ {subject.workload}h</Text>
-        <Text style={styles.cardSub}>👨‍🏫 Professor ID: {subject.teacherId}</Text>
+        <Text style={styles.cardName}>{subject.nome}</Text>
+        <Text style={styles.cardSub}>📚 {subject.curso}</Text>
+        <Text style={styles.cardSub}>🗓 Semestre {subject.semestre}</Text>
+        <Text style={styles.cardSub}>⏱ {subject.cargaHoraria}h</Text>
+        <Text style={styles.cardSub}>👨‍🏫 Professor ID: {subject.professorId}</Text>
       </View>
 
       <TouchableOpacity onPress={confirmDelete} style={styles.deleteBtn}>
@@ -54,7 +54,7 @@ function SubjectCard({
 export function SubjectListScreen() {
   const { subjects, removeSubject } = useData();
   const navigation = useNavigation<any>();
-  const { search, setSearch, filtered } = useSearch(subjects, ['name', 'course']);
+  const { search, setSearch, filtered } = useSearch(subjects, ['nome', 'curso']);
    const { user } = useAuth();   
 
 
@@ -88,7 +88,7 @@ export function SubjectListScreen() {
               {search ? 'Nenhuma disciplina encontrada' : 'Nenhuma disciplina cadastrada'}
             </Text>
 
-            {user?.role === 'admin' && (
+            {user?.perfil === 'admin' && (
               <TouchableOpacity
                 style={styles.emptyBtn}
                 onPress={() => navigation.navigate('SubjectForm')}
@@ -102,7 +102,7 @@ export function SubjectListScreen() {
         }
       />
 
-      {subjects.length > 0 && user?.role === 'admin' && (
+      {subjects.length > 0 && user?.perfil === 'admin' && (
         <TouchableOpacity
           style={styles.fab}
           onPress={() => navigation.navigate('SubjectForm')}

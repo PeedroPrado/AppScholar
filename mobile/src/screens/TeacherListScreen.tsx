@@ -25,12 +25,12 @@ function TeacherCard({
   teacher: Teacher;
   onDelete: (id: string) => void;
 }) {
-  const titleColor = TITLE_COLORS[teacher.title] ?? theme.colors.primary;
+  const titleColor = TITLE_COLORS[teacher.titulacao] ?? theme.colors.primary;
 
   function confirmDelete() {
     Alert.alert(
       'Remover professor',
-      `Deseja remover "${teacher.name}"?`,
+      `Deseja remover "${teacher.nome}"?`,
       [
         { text: 'Cancelar', style: 'cancel' },
         { text: 'Remover', style: 'destructive', onPress: () => onDelete(teacher.id) },
@@ -42,24 +42,24 @@ function TeacherCard({
     <View style={styles.card}>
       <View style={[styles.avatar, { backgroundColor: titleColor }]}>
         <Text style={styles.avatarText}>
-          {teacher.name.charAt(0).toUpperCase()}
+          {teacher.nome.charAt(0).toUpperCase()}
         </Text>
       </View>
 
       <View style={styles.cardInfo}>
-        <Text style={styles.cardName}>{teacher.name}</Text>
+        <Text style={styles.cardName}>{teacher.nome}</Text>
 
         {/* Badge de titulação */}
         <View style={[styles.badge, { backgroundColor: titleColor + '20' }]}>
           <Text style={[styles.badgeText, { color: titleColor }]}>
-            {teacher.title}
+            {teacher.titulacao}
           </Text>
         </View>
 
         <Text style={styles.cardSub}>🔬 {teacher.area}</Text>
         <Text style={styles.cardSub}>📧 {teacher.email}</Text>
         <Text style={styles.cardSub}>
-          🗓 {teacher.yearsTeaching} ano{teacher.yearsTeaching !== 1 ? 's' : ''} de docência
+          🗓 {teacher.tempoDocencia} ano{teacher.tempoDocencia !== 1 ? 's' : ''} de docência
         </Text>
       </View>
 
@@ -73,7 +73,7 @@ function TeacherCard({
 export function TeacherListScreen() {
   const { teachers, removeTeacher } = useData();
   const navigation = useNavigation<any>();
-  const { search, setSearch, filtered } = useSearch(teachers, ['name', 'area', 'title']);
+  const { search, setSearch, filtered } = useSearch(teachers, ['nome', 'area', 'titulacao']);
 
   return (
     <View style={styles.container}>

@@ -1,45 +1,53 @@
 export interface User {
+    id: string;
+    nome: string;
     email: string;
-    name: string;
-    role: 'admin' | 'student' | 'teacher';
+    perfil: 'admin' | 'student' | 'teacher';
 }
 
 export interface Student {
     id: string;
-    name: string;
-    enrollment: string; //matrícula
-    course: string;
+    
+    nome: string;
+    matricula: string; //matrícula
+    curso: string;
+
     email: string;
-    phone: string;
-    zipCode: string;
-    address: string;
-    city: string;
-    state: string;
+    telefone: string;
+
+    cep: string;
+    endereco: string;
+
+    cidade: string;
+    estado: string;
 }
 
 export interface Teacher {
     id: string;
-    name: string;
-    title: string;   
-    area: string;  
-    yearsTeaching: number;
+
+    nome: string;
+    titulacao:string;
+
+    area: string;
+
+    tempoDocencia: number;
     email: string;
 }
 
 export interface Subject {
     id: string;
-    name: string;
-    workload: number; //carga horária
-    teacherId: string;
-    course: string;
-    semester: number; 
+    nome: string;
+    cargaHoraria: number; //carga horária
+    professorId: string;
+    curso: string;
+    semestre: number; 
 }
 
 export interface Grade{
     id: string;
-    subjectName: string;
-    grade1: number;
-    grade2: number;
-    average: number;
-    status: 'Aprovado' | 'Reprovado' | 'Em andamento';
+    disciplina: string;
+    nota1: number;
+    nota2: number;
+    media: number;
+    situacao: 'Aprovado' | 'Reprovado' | 'Em andamento';
 }

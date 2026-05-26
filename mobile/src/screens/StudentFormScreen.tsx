@@ -8,6 +8,9 @@ import { Button } from '../components/Button';
 import { theme } from '../styles/theme';
 import { Student } from '../types';
 import { useData } from '../context/DataContext';
+import { buscarCEP } from '../services/viaCepService';
+import { createStudent } from "../services/studentService";
+
 
 // Gera um ID único simples (na Parte 2 virá do banco)
 function generateId(): string {
@@ -16,15 +19,15 @@ function generateId(): string {
 
 // Estado inicial limpo — facilita o reset do formulário
 const EMPTY_FORM = {
-  name: '',
-  enrollment: '',
-  course: '',
+  nome: '',
+  matricula: '',
+  curso: '',
   email: '',
-  phone: '',
-  zipCode: '',
-  address: '',
-  city: '',
-  state: '',
+  telefone: '',
+  cep: '',
+  endereco: '',
+  cidade: '',
+  estado: '',
 };
 
 export function StudentFormScreen() {
@@ -40,35 +43,43 @@ export function StudentFormScreen() {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   }
+  
 
-  // Busca endereço automaticamente pelo CEP usando a API pública ViaCEP
   async function handleZipCode(cep: string) {
-    handleChange('zipCode', cep);
-    const cleaned = cep.replace(/\D/g, '');
-    if (cleaned.length === 8) {
-      try {
-        const response = await fetch(`https://viacep.com.br/ws/${cleaned}/json/`);
-        const data = await response.json();
-        if (!data.erro) {
-          setForm(prev => ({
-            ...prev,
-            address: data.logradouro,
-            city: data.localidade,
-            state: data.uf,
-          }));
-        }
-      } catch {
-        // Se a API falhar, o usuário preenche manualmente
+
+  handleChange('cep', cep);
+
+  const cleaned = cep.replace(/\D/g, '');
+
+  if (cleaned.length === 8) {
+
+    try {
+
+      const data = await buscarCEP(cleaned);
+
+      if (!data.erro) {
+
+        setForm(prev => ({
+          ...prev,
+          endereco: data.logradouro,
+          cidade: data.localidade,
+          estado: data.uf,
+        }));
       }
+
+    } catch (error) {
+
+      console.log(error);
     }
   }
+}
 
   function validate(): boolean {
     const newErrors: Partial<typeof EMPTY_FORM> = {};
 
-    if (!form.name.trim())       newErrors.name = 'Nome é obrigatório';
-    if (!form.enrollment.trim()) newErrors.enrollment = 'Matrícula é obrigatória';
-    if (!form.course.trim())     newErrors.course = 'Curso é obrigatório';
+    if (!form.nome.trim())       newErrors.nome = 'Nome é obrigatório';
+    if (!form.matricula.trim()) newErrors.matricula = 'Matrícula é obrigatória';
+    if (!form.curso.trim())     newErrors.curso = 'Curso é obrigatório';
 
     if (!form.email.trim()) {
       newErrors.email = 'E-mail é obrigatório';
@@ -76,16 +87,16 @@ export function StudentFormScreen() {
       newErrors.email = 'E-mail inválido';
     }
 
-    if (!form.phone.trim()) {
-      newErrors.phone = 'Telefone é obrigatório';
-    } else if (form.phone.replace(/\D/g, '').length < 10) {
-      newErrors.phone = 'Telefone inválido';
+    if (!form.telefone.trim()) {
+      newErrors.telefone = 'Telefone é obrigatório';
+    } else if (form.telefone.replace(/\D/g, '').length < 10) {
+      newErrors.telefone = 'Telefone inválido';
     }
 
-    if (!form.zipCode.trim())  newErrors.zipCode = 'CEP é obrigatório';
-    if (!form.address.trim())  newErrors.address = 'Endereço é obrigatório';
-    if (!form.city.trim())     newErrors.city = 'Cidade é obrigatória';
-    if (!form.state.trim())    newErrors.state = 'Estado é obrigatório';
+    if (!form.cep.trim())  newErrors.cep = 'CEP é obrigatório';
+    if (!form.endereco.trim())  newErrors.endereco = 'Endereço é obrigatório';
+    if (!form.cidade.trim())     newErrors.cidade = 'Cidade é obrigatória';
+    if (!form.estado.trim())    newErrors.estado = 'Estado é obrigatório';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -93,26 +104,46 @@ export function StudentFormScreen() {
 
 const { addStudent } = useData();
 
-  // Substitua o handleSubmit completo:
 async function handleSubmit() {
+
   if (!validate()) return;
+
   setLoading(true);
-  await new Promise(resolve => setTimeout(resolve, 800));
 
-  const newStudent: Student = {
-    id: generateId(),
-    ...form,
-  };
+  try {
 
-  addStudent(newStudent); // salva no contexto global
-  console.log('Aluno cadastrado:', newStudent);
+    const newStudent = await createStudent({
+      nome: form.nome,
+      matricula: form.matricula,
+      curso: form.curso,
+      email: form.email,
+      telefone: form.telefone,
+      cep: form.cep,
+      endereco: form.endereco,
+      cidade: form.cidade,
+      estado: form.estado,
+    });
 
-  setLoading(false);
-  Alert.alert(
-    'Sucesso! 🎓',
-    `Aluno "${newStudent.name}" cadastrado com matrícula ${newStudent.enrollment}.`,
-    [{ text: 'OK', onPress: () => setForm(EMPTY_FORM) }]
-  );
+    Alert.alert(
+      "Sucesso 🎓",
+      `Aluno "${newStudent.nome}" cadastrado com sucesso!`
+    );
+
+    setForm(EMPTY_FORM);
+
+  } catch (error) {
+
+    console.log(error);
+
+    Alert.alert(
+      "Erro",
+      "Não foi possível cadastrar aluno"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
 }
   return (
     <KeyboardAvoidingView
@@ -130,25 +161,25 @@ async function handleSubmit() {
 
           <Input
             label="Nome completo *"
-            value={form.name}
-            onChangeText={v => handleChange('name', v)}
-            error={errors.name}
+            value={form.nome}
+            onChangeText={v => handleChange('nome', v)}
+            error={errors.nome}
             placeholder="Ex: João da Silva"
             autoCapitalize="words"
           />
           <Input
             label="Matrícula *"
-            value={form.enrollment}
-            onChangeText={v => handleChange('enrollment', v)}
-            error={errors.enrollment}
+            value={form.matricula}
+            onChangeText={v => handleChange('matricula', v)}
+            error={errors.matricula}
             placeholder="Ex: DSM2025001"
             autoCapitalize="characters"
           />
           <Input
             label="Curso *"
-            value={form.course}
-            onChangeText={v => handleChange('course', v)}
-            error={errors.course}
+            value={form.curso}
+            onChangeText={v => handleChange('curso', v)}
+            error={errors.curso}
             placeholder="Ex: Desenvolvimento de Software Multiplataforma"
             autoCapitalize="words"
           />
@@ -169,9 +200,9 @@ async function handleSubmit() {
           />
           <Input
             label="Telefone *"
-            value={form.phone}
-            onChangeText={v => handleChange('phone', v)}
-            error={errors.phone}
+            value={form.telefone}
+            onChangeText={v => handleChange('telefone', v)}
+            error={errors.telefone}
             placeholder="(12) 99999-0000"
             keyboardType="phone-pad"
           />
@@ -183,9 +214,9 @@ async function handleSubmit() {
 
           <Input
             label="CEP *"
-            value={form.zipCode}
+            value={form.cep}
             onChangeText={handleZipCode}
-            error={errors.zipCode}
+            error={errors.cep}
             placeholder="12345-678"
             keyboardType="numeric"
             maxLength={9}
@@ -198,9 +229,9 @@ async function handleSubmit() {
 
           <Input
             label="Endereço *"
-            value={form.address}
-            onChangeText={v => handleChange('address', v)}
-            error={errors.address}
+            value={form.endereco}
+            onChangeText={v => handleChange('endereco', v)}
+            error={errors.endereco}
             placeholder="Rua, número, bairro"
           />
 
@@ -209,18 +240,18 @@ async function handleSubmit() {
             <View style={styles.rowFlex}>
               <Input
                 label="Cidade *"
-                value={form.city}
-                onChangeText={v => handleChange('city', v)}
-                error={errors.city}
+                value={form.cidade}
+                onChangeText={v => handleChange('cidade', v)}
+                error={errors.cidade}
                 placeholder="Jacareí"
               />
             </View>
             <View style={styles.rowSmall}>
               <Input
                 label="UF *"
-                value={form.state}
-                onChangeText={v => handleChange('state', v.toUpperCase())}
-                error={errors.state}
+                value={form.estado}
+                onChangeText={v => handleChange('estado', v.toUpperCase())}
+                error={errors.estado}
                 placeholder="SP"
                 maxLength={2}
                 autoCapitalize="characters"

@@ -14,21 +14,15 @@ function generateId(): string {
   return Math.random().toString(36).substring(2, 9).toUpperCase();
 }
 
-// Professores mockados — na Parte 2 virão da API
-const MOCK_TEACHERS: Teacher[] = [
-  { id: 'T1', name: 'Prof. André Olímpio',    title: 'Mestrado', area: 'Mobile',   yearsTeaching: 8,  email: 'andre@fatec.sp.gov.br' },
-  { id: 'T2', name: 'Prof. Carlos Mendes',    title: 'Doutorado', area: 'Backend', yearsTeaching: 12, email: 'carlos@fatec.sp.gov.br' },
-  { id: 'T3', name: 'Prof. Marina Oliveira',  title: 'Mestrado', area: 'Frontend', yearsTeaching: 5,  email: 'marina@fatec.sp.gov.br' },
-];
 
 const SEMESTERS = ['1º Semestre', '2º Semestre', '3º Semestre', '4º Semestre', '5º Semestre', '6º Semestre'];
 
 const EMPTY_FORM = {
-  name: '',
-  workload: '',
-  teacherId: '',
-  course: '',
-  semester: '',
+  nome: '',
+  cargaHoraria: '',
+  professorId: '',
+  curso: '',
+  semestre: '',
 };
 
 export function SubjectFormScreen() {
@@ -42,12 +36,7 @@ export function SubjectFormScreen() {
 
   // useEffect carrega a lista de professores ao abrir a tela
   // Na Parte 2, aqui vai a chamada: fetch('http://api/teachers')
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTeachers(MOCK_TEACHERS);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, []);
+
 
   function handleChange(field: keyof typeof EMPTY_FORM, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -55,23 +44,23 @@ export function SubjectFormScreen() {
   }
 
   // Helpers para os seletores
-  const selectedTeacher = teachers.find(t => t.id === form.teacherId);
-  const selectedSemester = form.semester;
+  const selectedTeacher = teachers.find(t => t.id === form.professorId);
+  const selectedSemester = form.semestre;
 
   function validate(): boolean {
     const newErrors: Partial<typeof EMPTY_FORM> = {};
 
-    if (!form.name.trim()) newErrors.name = 'Nome da disciplina é obrigatório';
+    if (!form.nome.trim()) newErrors.nome = 'Nome da disciplina é obrigatório';
 
-    if (!form.workload.trim()) {
-      newErrors.workload = 'Carga horária é obrigatória';
-    } else if (isNaN(Number(form.workload)) || Number(form.workload) <= 0) {
-      newErrors.workload = 'Informe uma carga horária válida';
+    if (!form.cargaHoraria.trim()) {
+      newErrors.cargaHoraria = 'Carga horária é obrigatória';
+    } else if (isNaN(Number(form.cargaHoraria)) || Number(form.cargaHoraria) <= 0) {
+      newErrors.cargaHoraria = 'Informe uma carga horária válida';
     }
 
-    if (!form.teacherId) newErrors.teacherId = 'Selecione o professor responsável';
-    if (!form.course.trim()) newErrors.course = 'Curso é obrigatório';
-    if (!form.semester) newErrors.semester = 'Semestre é obrigatório';
+    if (!form.professorId) newErrors.professorId = 'Selecione o professor responsável';
+    if (!form.curso.trim()) newErrors.curso = 'Curso é obrigatório';
+    if (!form.semestre) newErrors.semestre = 'Semestre é obrigatório';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -84,11 +73,11 @@ export function SubjectFormScreen() {
 
     const newSubject: Subject = {
       id: generateId(),
-      name: form.name,
-      workload: Number(form.workload),
-      teacherId: form.teacherId,
-      course: form.course,
-      semester: Number(form.semester.charAt(0)),
+      nome: form.nome,
+      cargaHoraria: Number(form.cargaHoraria),
+      professorId: form.professorId,
+      curso: form.curso,
+      semestre: Number(form.semestre.charAt(0)),
     };
 
     addSubject(newSubject);
@@ -96,7 +85,7 @@ export function SubjectFormScreen() {
     setLoading(false);
     Alert.alert(
       'Sucesso! 📖',
-      `Disciplina "${newSubject.name}" cadastrada com sucesso.`,
+      `Disciplina "${newSubject.nome}" cadastrada com sucesso.`,
       [{ text: 'OK', onPress: () => { setForm(EMPTY_FORM); setErrors({}); } }]
     );
   }
@@ -116,27 +105,27 @@ export function SubjectFormScreen() {
 
           <Input
             label="Nome da disciplina *"
-            value={form.name}
-            onChangeText={v => handleChange('name', v)}
-            error={errors.name}
+            value={form.nome}
+            onChangeText={v => handleChange('nome', v)}
+            error={errors.nome}
             placeholder="Ex: Programação para Dispositivos Móveis I"
             autoCapitalize="words"
           />
 
           <Input
             label="Carga horária (horas) *"
-            value={form.workload}
-            onChangeText={v => handleChange('workload', v)}
-            error={errors.workload}
+            value={form.cargaHoraria}
+            onChangeText={v => handleChange('cargaHoraria', v)}
+            error={errors.cargaHoraria}
             placeholder="Ex: 80"
             keyboardType="numeric"
           />
 
           <Input
             label="Curso *"
-            value={form.course}
-            onChangeText={v => handleChange('course', v)}
-            error={errors.course}
+            value={form.curso}
+            onChangeText={v => handleChange('curso', v)}
+            error={errors.curso}
             placeholder="Ex: Desenvolvimento de Software Multiplataforma"
             autoCapitalize="words"
           />
@@ -148,7 +137,7 @@ export function SubjectFormScreen() {
 
           <Text style={styles.label}>Professor *</Text>
           <TouchableOpacity
-            style={[styles.selector, errors.teacherId ? styles.selectorError : null]}
+            style={[styles.selector, errors.professorId ? styles.selectorError : null]}
             onPress={() => {
               setShowTeacherPicker(!showTeacherPicker);
               setShowSemesterPicker(false);
@@ -158,8 +147,8 @@ export function SubjectFormScreen() {
             <View style={{ flex: 1 }}>
               {selectedTeacher ? (
                 <>
-                  <Text style={styles.selectorText}>{selectedTeacher.name}</Text>
-                  <Text style={styles.selectorSub}>{selectedTeacher.area} · {selectedTeacher.title}</Text>
+                  <Text style={styles.selectorText}>{selectedTeacher.nome}</Text>
+                  <Text style={styles.selectorSub}>{selectedTeacher.area} · {selectedTeacher.titulacao}</Text>
                 </>
               ) : (
                 <Text style={styles.selectorPlaceholder}>Selecione o professor</Text>
@@ -167,23 +156,23 @@ export function SubjectFormScreen() {
             </View>
             <Text style={styles.selectorIcon}>{showTeacherPicker ? '▲' : '▼'}</Text>
           </TouchableOpacity>
-          {errors.teacherId ? <Text style={styles.errorText}>{errors.teacherId}</Text> : null}
+          {errors.professorId ? <Text style={styles.errorText}>{errors.professorId}</Text> : null}
 
           {showTeacherPicker && (
             <View style={styles.pickerList}>
               {teachers.map(t => (
                 <TouchableOpacity
                   key={t.id}
-                  style={[styles.pickerItem, form.teacherId === t.id && styles.pickerItemSelected]}
+                  style={[styles.pickerItem, form.professorId === t.id && styles.pickerItemSelected]}
                   onPress={() => {
-                    handleChange('teacherId', t.id);
+                    handleChange('professorId', t.id);
                     setShowTeacherPicker(false);
                   }}
                 >
-                  <Text style={[styles.pickerItemText, form.teacherId === t.id && styles.pickerItemTextSelected]}>
-                    {t.name}
+                  <Text style={[styles.pickerItemText, form.professorId === t.id && styles.pickerItemTextSelected]}>
+                    {t.nome}
                   </Text>
-                  <Text style={styles.pickerItemSub}>{t.area} · {t.title}</Text>
+                  <Text style={styles.pickerItemSub}>{t.area} · {t.titulacao}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -196,7 +185,7 @@ export function SubjectFormScreen() {
 
           <Text style={styles.label}>Semestre *</Text>
           <TouchableOpacity
-            style={[styles.selector, errors.semester ? styles.selectorError : null]}
+            style={[styles.selector, errors.semestre ? styles.selectorError : null]}
             onPress={() => {
               setShowSemesterPicker(!showSemesterPicker);
               setShowTeacherPicker(false);
@@ -208,20 +197,20 @@ export function SubjectFormScreen() {
             </Text>
             <Text style={styles.selectorIcon}>{showSemesterPicker ? '▲' : '▼'}</Text>
           </TouchableOpacity>
-          {errors.semester ? <Text style={styles.errorText}>{errors.semester}</Text> : null}
+          {errors.semestre ? <Text style={styles.errorText}>{errors.semestre}</Text> : null}
 
           {showSemesterPicker && (
             <View style={styles.semesterGrid}>
               {SEMESTERS.map(s => (
                 <TouchableOpacity
                   key={s}
-                  style={[styles.semesterChip, form.semester === s && styles.semesterChipSelected]}
+                  style={[styles.semesterChip, form.semestre === s && styles.semesterChipSelected]}
                   onPress={() => {
-                    handleChange('semester', s);
+                    handleChange('semestre', s);
                     setShowSemesterPicker(false);
                   }}
                 >
-                  <Text style={[styles.semesterChipText, form.semester === s && styles.semesterChipTextSelected]}>
+                  <Text style={[styles.semesterChipText, form.semestre === s && styles.semesterChipTextSelected]}>
                     {s}
                   </Text>
                 </TouchableOpacity>
@@ -231,24 +220,24 @@ export function SubjectFormScreen() {
         </View>
 
         {/* Preview da disciplina */}
-        {form.name ? (
+        {form.nome ? (
           <View style={styles.preview}>
             <Text style={styles.previewTitle}>Preview da Disciplina</Text>
-            <Text style={styles.previewName}>{form.name}</Text>
+            <Text style={styles.previewName}>{form.nome}</Text>
             <View style={styles.previewRow}>
-              {form.workload ? (
+              {form.cargaHoraria ? (
                 <View style={styles.previewBadge}>
-                  <Text style={styles.previewBadgeText}>⏱ {form.workload}h</Text>
+                  <Text style={styles.previewBadgeText}>⏱ {form.cargaHoraria}h</Text>
                 </View>
               ) : null}
-              {form.semester ? (
+              {form.semestre ? (
                 <View style={styles.previewBadge}>
-                  <Text style={styles.previewBadgeText}>📅 {form.semester}</Text>
+                  <Text style={styles.previewBadgeText}>📅 {form.semestre}</Text>
                 </View>
               ) : null}
               {selectedTeacher ? (
                 <View style={styles.previewBadge}>
-                  <Text style={styles.previewBadgeText}>👨‍🏫 {selectedTeacher.name.split(' ')[1]}</Text>
+                  <Text style={styles.previewBadgeText}>👨‍🏫 {selectedTeacher.nome.split(' ')[1]}</Text>
                 </View>
               ) : null}
             </View>

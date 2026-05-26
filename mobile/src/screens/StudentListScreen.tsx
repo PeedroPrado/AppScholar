@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, FlatList,
   TouchableOpacity, Alert, TextInput
@@ -9,6 +9,7 @@ import { Student } from '../types';
 import { theme } from '../styles/theme'
 import { useAuth } from '../hooks/useAuth';
 import { useSearch } from '../hooks/useSearch';
+import { getStudents } from '../services/studentService';
 
 function StudentCard({
   student,
@@ -20,7 +21,7 @@ function StudentCard({
   function confirmDelete() {
     Alert.alert(
       'Remover aluno',
-      `Deseja remover "${student.name}"?`,
+      `Deseja remover "${student.nome}"?`,
       [
         { text: 'Cancelar', style: 'cancel' },
         { text: 'Remover', style: 'destructive', onPress: () => onDelete(student.id) },
@@ -33,16 +34,16 @@ function StudentCard({
       {/* Avatar com inicial do nome */}
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-          {student.name.charAt(0).toUpperCase()}
+          {student.nome.charAt(0).toUpperCase()}
         </Text>
       </View>
 
       <View style={styles.cardInfo}>
-        <Text style={styles.cardName}>{student.name}</Text>
-        <Text style={styles.cardSub}>🎓 {student.enrollment}</Text>
-        <Text style={styles.cardSub}>📚 {student.course}</Text>
+        <Text style={styles.cardName}>{student.nome}</Text>
+        <Text style={styles.cardSub}>🎓 {student.matricula}</Text>
+        <Text style={styles.cardSub}>📚 {student.curso}</Text>
         <Text style={styles.cardSub}>📧 {student.email}</Text>
-        <Text style={styles.cardSub}>📍 {student.city} - {student.state}</Text>
+        <Text style={styles.cardSub}>📍 {student.cidade} - {student.estado}</Text>
       </View>
 
       <TouchableOpacity onPress={confirmDelete} style={styles.deleteBtn}>
@@ -53,9 +54,30 @@ function StudentCard({
 }
 
 export function StudentListScreen() {
-  const { students, removeStudent } = useData();
+  const [students, setStudents] = useState<Student[]>([]);
   const navigation = useNavigation<any>();
-  const { search, setSearch, filtered } = useSearch(students, ['name', 'enrollment']);
+  const { search, setSearch, filtered } = useSearch(students, ['nome', 'matricula']);
+
+  useEffect(() => {
+
+  async function loadStudents() {
+
+    try {
+
+      const data = await getStudents();
+
+      setStudents(data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  }
+
+  loadStudents();
+
+}, []);
   
   return (
     <View style={styles.container}>
@@ -79,7 +101,7 @@ export function StudentListScreen() {
         data={filtered}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <StudentCard student={item} onDelete={removeStudent} />
+          <StudentCard student={item} onDelete={() => {}} />
         )}
         contentContainerStyle={styles.list}
         ListEmptyComponent={

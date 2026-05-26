@@ -18,10 +18,10 @@ function generateId(): string {
 const TITULATIONS = ['Graduação', 'Especialização', 'Mestrado', 'Doutorado', 'Pós-Doutorado'];
 
 const EMPTY_FORM = {
-  name: '',
-  title: '',
+  nome: '',
+  titulacao: '',
   area: '',
-  yearsTeaching: '',
+  tempoDocencia: '',
   email: '',
 };
 
@@ -38,21 +38,21 @@ export function TeacherFormScreen() {
   }
 
   function selectTitulation(title: string) {
-    handleChange('title', title);
+    handleChange('titulacao', title);
     setShowTitulationPicker(false);
   }
 
   function validate(): boolean {
     const newErrors: Partial<typeof EMPTY_FORM> = {};
 
-    if (!form.name.trim())  newErrors.name = 'Nome é obrigatório';
-    if (!form.title.trim()) newErrors.title = 'Titulação é obrigatória';
+    if (!form.nome.trim())  newErrors.nome = 'Nome é obrigatório';
+    if (!form.titulacao.trim()) newErrors.titulacao = 'Titulação é obrigatória';
     if (!form.area.trim())  newErrors.area = 'Área de atuação é obrigatória';
 
-    if (!form.yearsTeaching.trim()) {
-      newErrors.yearsTeaching = 'Tempo de docência é obrigatório';
-    } else if (isNaN(Number(form.yearsTeaching)) || Number(form.yearsTeaching) < 0) {
-      newErrors.yearsTeaching = 'Informe um número válido';
+    if (!form.tempoDocencia.trim()) {
+      newErrors.tempoDocencia = 'Tempo de docência é obrigatório';
+    } else if (isNaN(Number(form.tempoDocencia)) || Number(form.tempoDocencia) < 0) {
+      newErrors.tempoDocencia = 'Informe um número válido';
     }
 
     if (!form.email.trim()) {
@@ -74,10 +74,10 @@ export function TeacherFormScreen() {
 
   const newTeacher: Teacher = {
     id: generateId(),
-    name: form.name,
-    title: form.title,
+    nome: form.nome,
+    titulacao: form.titulacao,
     area: form.area,
-    yearsTeaching: Number(form.yearsTeaching),
+    tempoDocencia: Number(form.tempoDocencia),
     email: form.email,
   };
 
@@ -87,7 +87,7 @@ export function TeacherFormScreen() {
   setLoading(false);
   Alert.alert(
     'Sucesso! 👨‍🏫',
-    `Professor "${newTeacher.name}" cadastrado com sucesso.`,
+    `Professor "${newTeacher.nome}" cadastrado com sucesso.`,
     [{ text: 'OK', onPress: () => { setForm(EMPTY_FORM); setErrors({}); } }]
   );
 }
@@ -107,9 +107,9 @@ export function TeacherFormScreen() {
 
           <Input
             label="Nome completo *"
-            value={form.name}
-            onChangeText={v => handleChange('name', v)}
-            error={errors.name}
+            value={form.nome}
+            onChangeText={v => handleChange('nome', v)}
+            error={errors.nome}
             placeholder="Ex: Prof. Dr. Carlos Mendes"
             autoCapitalize="words"
           />
@@ -119,20 +119,20 @@ export function TeacherFormScreen() {
           <TouchableOpacity
             style={[
               styles.selector,
-              errors.title ? styles.selectorError : null,
+              errors.titulacao ? styles.selectorError : null,
             ]}
             onPress={() => setShowTitulationPicker(!showTitulationPicker)}
             activeOpacity={0.8}
           >
-            <Text style={form.title ? styles.selectorText : styles.selectorPlaceholder}>
-              {form.title || 'Selecione a titulação'}
+            <Text style={form.titulacao ? styles.selectorText : styles.selectorPlaceholder}>
+              {form.titulacao || 'Selecione a titulação'}
             </Text>
             <Text style={styles.selectorIcon}>
               {showTitulationPicker ? '▲' : '▼'}
             </Text>
           </TouchableOpacity>
-          {errors.title ? (
-            <Text style={styles.errorText}>{errors.title}</Text>
+          {errors.titulacao ? (
+            <Text style={styles.errorText}>{errors.titulacao}</Text>
           ) : null}
 
           {/* Lista de opções */}
@@ -143,13 +143,13 @@ export function TeacherFormScreen() {
                   key={t}
                   style={[
                     styles.pickerItem,
-                    form.title === t && styles.pickerItemSelected,
+                    form.titulacao === t && styles.pickerItemSelected,
                   ]}
                   onPress={() => selectTitulation(t)}
                 >
                   <Text style={[
                     styles.pickerItemText,
-                    form.title === t && styles.pickerItemTextSelected,
+                    form.titulacao === t && styles.pickerItemTextSelected,
                   ]}>
                     {t}
                   </Text>
@@ -169,9 +169,9 @@ export function TeacherFormScreen() {
 
           <Input
             label="Tempo de docência (anos) *"
-            value={form.yearsTeaching}
-            onChangeText={v => handleChange('yearsTeaching', v)}
-            error={errors.yearsTeaching}
+            value={form.tempoDocencia}
+            onChangeText={v => handleChange('tempoDocencia', v)}
+            error={errors.tempoDocencia}
             placeholder="Ex: 5"
             keyboardType="numeric"
           />
@@ -188,12 +188,12 @@ export function TeacherFormScreen() {
         </View>
 
         {/* Card de preview antes de salvar */}
-        {form.name || form.title ? (
+        {form.nome || form.titulacao ? (
           <View style={styles.preview}>
             <Text style={styles.previewTitle}>Preview</Text>
-            <Text style={styles.previewName}>{form.name || '—'}</Text>
+            <Text style={styles.previewName}>{form.nome || '—'}</Text>
             <Text style={styles.previewSub}>
-              {form.title} {form.area ? `· ${form.area}` : ''}
+              {form.titulacao} {form.area ? `· ${form.area}` : ''}
             </Text>
           </View>
         ) : null}

@@ -4,13 +4,13 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from '../hooks/useAuth';
 import { theme } from "../styles/theme";
 
-type Role = 'admin' | 'student' | 'teacher';
+type Perfil = 'admin' | 'estudante' | 'professor';
 
 type MenuItem = {
   label: string;
   icon: string;
   route: string;
-  roles: Role[];
+  perfis: Perfil[];
 };
 
 const menuItems = [
@@ -18,43 +18,43 @@ const menuItems = [
     label: "Cadastrar Alunos",
     icon: "👨‍🎓",
     route: "StudentForm",
-    roles: ["admin"]
+    perfis: ["admin"]
   },
   {
     label: "Lista de Alunos",
     icon: "📋",
     route: "StudentList",
-    roles: ["admin", "teacher"]
+    perfis: ["admin", "professor"]
   },
   {
     label: "Cadastrar Professores",
     icon: "👨‍🏫",
     route: "TeacherForm",
-    roles: ["admin"]
+    perfis: ["admin"]
   },
   {
     label: "Lista de Professores",
     icon: "📋",
     route: "TeacherList",
-    roles: ["admin"]
+    perfis: ["admin"]
   },
   {
     label: "Cadastrar Disciplinas",
     icon: "📚",
     route: "SubjectForm",
-    roles: ["admin"]
+    perfis: ["admin"]
   },
   {
     label: "Boletim",
     icon: "📄",
     route: "Grades",
-    roles: ["student"]
+    perfis: ["estudante"]
   },
   {
     label: "Disciplinas",
     icon: "📚",
     route: "SubjectList",
-    roles: ["admin", "teacher", "student"]
+    perfis: ["admin", "professor", "estudante"]
   }
 ];
 
@@ -63,9 +63,9 @@ export function DashboardScreen() {
     const navigation = useNavigation<any>();
 
     const roleLabel =
-        user?.role === 'student'
+        user?.perfil === 'student'
             ? 'Aluno'
-            : user?.role === 'teacher'
+            : user?.perfil === 'teacher'
             ? 'Professor'
             : 'Administrador';
 
@@ -76,7 +76,7 @@ export function DashboardScreen() {
     >
             <View style={styles.header}>
                 <Text style={styles.greeting}>
-                    Olá, {user?.name} 👋
+                    Olá, {user?.nome} 👋
                 </Text>
 
                 <Text style={styles.role}>
@@ -92,7 +92,9 @@ export function DashboardScreen() {
 
         <View style={styles.grid}>
           {menuItems
-            .filter(item => item.roles.includes(user!.role))
+            .filter(item =>
+            item.perfis.includes(user!.perfil as Perfil)
+          )
             .map((item) => (
               <TouchableOpacity
                 key={item.route}
