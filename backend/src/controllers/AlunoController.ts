@@ -36,4 +36,26 @@ export class AlunoController {
 
     }
   }
-}
+
+  static async delete(
+    req: Request,
+    res: Response
+  ) {
+    try {
+      const  id = req.params.id as string
+
+      await AlunoService.delete(id);  
+
+      return res.status(200).json({
+        mensagem:"Aluno removido"
+      });
+    } catch (error){
+
+      console.log(error);
+
+      return res.status(500).json({
+      erro: "Erro ao remover aluno"
+      });
+      }
+    }
+  }

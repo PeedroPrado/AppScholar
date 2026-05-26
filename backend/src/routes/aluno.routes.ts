@@ -18,4 +18,9 @@ router.get(
   AlunoController.findAll
 );
 
+router.delete(
+  "/alunos/:id",
+  authMiddleware,
+  AlunoController.delete
+)
 export default router;

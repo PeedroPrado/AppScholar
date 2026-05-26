@@ -7,7 +7,8 @@ interface LoginDTO {
 
 export class AuthService {
     static async login ({ email, senha }: LoginDTO) {
-
+    console.log(email);
+    console.log(senha)  
     if(
         email !== "admin@email.com" || 
         senha !== "123456"

@@ -3,13 +3,13 @@ import {
   View, Text, StyleSheet, FlatList,
   TouchableOpacity, Alert, TextInput
 } from 'react-native';
-import { useData } from '../context/DataContext';
 import { useNavigation } from '@react-navigation/native';
 import { Student } from '../types';
 import { theme } from '../styles/theme'
 import { useAuth } from '../hooks/useAuth';
 import { useSearch } from '../hooks/useSearch';
-import { getStudents } from '../services/studentService';
+import { getStudents, deleteStudent } from '../services/studentService';
+
 
 function StudentCard({
   student,
@@ -78,6 +78,29 @@ export function StudentListScreen() {
   loadStudents();
 
 }, []);
+
+async function handleDelete(id: string) {
+
+  try {
+
+    await deleteStudent(id);
+
+    setStudents(prev =>
+      prev.filter(student =>
+        student.id !== id
+      )
+    );
+
+  } catch (error) {
+
+    console.log(error);
+
+    Alert.alert(
+      "Erro",
+      "Não foi possível remover aluno"
+    );
+  }
+}
   
   return (
     <View style={styles.container}>
@@ -101,7 +124,7 @@ export function StudentListScreen() {
         data={filtered}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <StudentCard student={item} onDelete={() => {}} />
+          <StudentCard student={item} onDelete={handleDelete} />
         )}
         contentContainerStyle={styles.list}
         ListEmptyComponent={

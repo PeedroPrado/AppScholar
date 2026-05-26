@@ -2,7 +2,7 @@ import axios from "axios";
 import {  getSecure } from "./secureStorage"
 
 export const api = axios.create({
-    baseURL: "http://192.168.15.7:3000/api"
+    baseURL: "http://10.68.55.89:3000/api"
 });
 
 api.interceptors.request.use(async config => {

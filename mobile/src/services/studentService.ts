@@ -14,3 +14,11 @@ export async function getStudents() {
     return response.data;
     
 }
+
+export async function deleteStudent(
+    id: string
+) {
+    await api.delete(
+        `/alunos/${id}`
+    );
+}

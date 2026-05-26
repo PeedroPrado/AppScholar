@@ -56,5 +56,14 @@ export class AlunoService {
 
         return result.rows;
     }
+
+    static async delete(id: string){
+        await pool.query(
+            `DELETE FROM alunos
+            WHERE id = $1
+            `,
+            [id]
+        );
+    }
 }
 
