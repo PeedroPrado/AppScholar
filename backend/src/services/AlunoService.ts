@@ -1,36 +1,92 @@
 import { pool } from "../database/db";
+import bcrypt from "bcrypt";
 
 interface CreateAlunoDTO {
+
     nome: string;
     matricula: string;
     curso: string;
+
     email: string;
     telefone: string;
+
     cep: string;
     endereco: string;
+
     cidade: string;
     estado: string;
 }
 
 export class AlunoService {
-    static async create(data: CreateAlunoDTO) {
-       const query = `
+
+    static async create(
+      data: CreateAlunoDTO
+    ) {
+
+      // cria senha padrão
+
+      const senhaHash =
+        await bcrypt.hash(
+          "123456",
+          10
+        );
+
+      // cria usuário
+
+      const usuarioResult =
+        await pool.query(
+          `
+          INSERT INTO usuarios (
+            nome,
+            email,
+            senha,
+            perfil
+          )
+          VALUES ($1,$2,$3,$4)
+          RETURNING id
+          `,
+          [
+            data.nome,
+            data.email,
+            senhaHash,
+            "student"
+          ]
+        );
+
+      // pega id do usuário criado
+
+      const usuarioId =
+        usuarioResult.rows[0].id;
+
+      // cria aluno
+
+      const query = `
         INSERT INTO alunos (
-        nome,
-        matricula,
-        curso,
-        email,
-        telefone,
-        cep,
-        endereco,
-        cidade,
-        estado
-      )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-      RETURNING *
+
+          usuario_id,
+
+          nome,
+          matricula,
+          curso,
+          email,
+          telefone,
+          cep,
+          endereco,
+          cidade,
+          estado
+
+        )
+        VALUES (
+          $1,$2,$3,$4,$5,
+          $6,$7,$8,$9,$10
+        )
+        RETURNING *
       `;
-      
+
       const values = [
+
+        usuarioId,
+
         data.nome,
         data.matricula,
         data.curso,
@@ -42,28 +98,37 @@ export class AlunoService {
         data.estado
       ];
 
-      const result = await pool.query(query, values);
+      const result =
+        await pool.query(
+          query,
+          values
+        );
 
-      return result.rows[0]
+      return result.rows[0];
     }
 
-    static async findAll(){
+    static async findAll() {
 
-        const result = await pool.query(`
-            SELECT * FROM alunos
+        const result =
+          await pool.query(`
+            SELECT *
+            FROM alunos
             ORDER BY id DESC
-            `);
+          `);
 
         return result.rows;
     }
 
-    static async delete(id: string){
+    static async delete(
+      id: string
+    ) {
+
         await pool.query(
-            `DELETE FROM alunos
+            `
+            DELETE FROM alunos
             WHERE id = $1
             `,
             [id]
         );
     }
 }
-
