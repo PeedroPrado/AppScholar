@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, {
+  useState,
+  useEffect
+} from 'react';
+
 import {
   View, Text, StyleSheet, FlatList,
   TouchableOpacity, Alert, TextInput
 } from 'react-native';
-import { useData } from '../context/DataContext';
 import { useNavigation } from '@react-navigation/native';
 import { Subject } from '../types';
 import { theme } from '../styles/theme';
 import { useAuth } from '../hooks/useAuth';
 import { useSearch } from '../hooks/useSearch';
+import {
+  getSubjects,
+  deleteSubject
+} from '../services/subjectService';
 
 function SubjectCard({
   subject,
@@ -52,9 +59,59 @@ function SubjectCard({
 }
 
 export function SubjectListScreen() {
-  const { subjects, removeSubject } = useData();
+ 
   const navigation = useNavigation<any>();
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const { search, setSearch, filtered } = useSearch(subjects, ['nome', 'curso']);
+
+  useEffect(() => {
+
+  async function loadSubjects() {
+
+    try {
+
+      const data =
+        await getSubjects();
+
+      console.log(data);
+
+      setSubjects(data);
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  }
+
+  loadSubjects();
+
+}, []);
+
+async function handleDelete(
+  id: string
+) {
+
+  try {
+
+    await deleteSubject(id);
+
+    setSubjects(prev =>
+      prev.filter(subject =>
+        subject.id !== id
+      )
+    );
+
+  } catch (error) {
+
+    console.log(error);
+
+    Alert.alert(
+      "Erro",
+      "Não foi possível remover disciplina"
+    );
+  }
+}
+
    const { user } = useAuth();   
 
 
@@ -78,7 +135,7 @@ export function SubjectListScreen() {
         data={filtered}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <SubjectCard subject={item} onDelete={removeSubject} />
+          <SubjectCard subject={item} onDelete={handleDelete} />
         )}
         contentContainerStyle={styles.list}
         ListEmptyComponent={

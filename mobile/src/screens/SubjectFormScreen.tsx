@@ -6,14 +6,11 @@ import {
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { theme } from '../styles/theme';
-import { Subject, Teacher } from '../types';
-import { useData } from '../context/DataContext';
-
-
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 9).toUpperCase();
-}
-
+import { Teacher } from '../types';
+import { createSubject }
+  from "../services/subjectService";
+  import { getTeachers }
+  from "../services/teacherService";
 
 const SEMESTERS = ['1º Semestre', '2º Semestre', '3º Semestre', '4º Semestre', '5º Semestre', '6º Semestre'];
 
@@ -26,7 +23,6 @@ const EMPTY_FORM = {
 };
 
 export function SubjectFormScreen() {
-  const { addSubject } = useData();
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState<Partial<typeof EMPTY_FORM>>({});
   const [loading, setLoading] = useState(false);
@@ -35,6 +31,34 @@ export function SubjectFormScreen() {
   const [showSemesterPicker, setShowSemesterPicker] = useState(false);
 
   // useEffect carrega a lista de professores ao abrir a tela
+
+  useEffect(() => {
+
+  async function loadTeachers() {
+
+    try {
+
+      const data =
+        await getTeachers();
+
+      console.log(data);
+
+      setTeachers(data);
+
+    } catch (error) {
+
+      console.log(error);
+
+      Alert.alert(
+        "Erro",
+        "Não foi possível carregar professores"
+      );
+    }
+  }
+
+  loadTeachers();
+
+}, []);
   // Na Parte 2, aqui vai a chamada: fetch('http://api/teachers')
 
 
@@ -67,28 +91,51 @@ export function SubjectFormScreen() {
   }
 
   async function handleSubmit() {
-    if (!validate()) return;
-    setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
 
-    const newSubject: Subject = {
-      id: generateId(),
-      nome: form.nome,
-      cargaHoraria: Number(form.cargaHoraria),
-      professorId: form.professorId,
-      curso: form.curso,
-      semestre: Number(form.semestre.charAt(0)),
-    };
+  if (!validate()) return;
 
-    addSubject(newSubject);
+  setLoading(true);
+
+  try {
+
+    const newSubject =
+      await createSubject({
+
+        nome: form.nome,
+
+        cargaHoraria:
+          Number(form.cargaHoraria),
+
+        professorId:
+          form.professorId,
+
+        curso: form.curso,
+
+        semestre:
+          Number(form.semestre),
+      });
+
+    Alert.alert(
+      "Sucesso 📚",
+      `Disciplina "${newSubject.nome}" cadastrada com sucesso!`
+    );
+
+    setForm(EMPTY_FORM);
+
+  } catch (error) {
+
+    console.log(error);
+
+    Alert.alert(
+      "Erro",
+      "Não foi possível cadastrar disciplina"
+    );
+
+  } finally {
 
     setLoading(false);
-    Alert.alert(
-      'Sucesso! 📖',
-      `Disciplina "${newSubject.nome}" cadastrada com sucesso.`,
-      [{ text: 'OK', onPress: () => { setForm(EMPTY_FORM); setErrors({}); } }]
-    );
   }
+}
 
   return (
     <KeyboardAvoidingView

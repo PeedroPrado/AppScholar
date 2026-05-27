@@ -6,16 +6,9 @@ import {
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { theme } from '../styles/theme';
-import { Student } from '../types';
-import { useData } from '../context/DataContext';
 import { buscarCEP } from '../services/viaCepService';
 import { createStudent } from "../services/studentService";
 
-
-// Gera um ID único simples (na Parte 2 virá do banco)
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 9).toUpperCase();
-}
 
 // Estado inicial limpo — facilita o reset do formulário
 const EMPTY_FORM = {
@@ -102,7 +95,7 @@ export function StudentFormScreen() {
     return Object.keys(newErrors).length === 0;
   }
 
-const { addStudent } = useData();
+
 
 async function handleSubmit() {
 

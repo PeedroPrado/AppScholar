@@ -6,13 +6,9 @@ import {
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { theme } from '../styles/theme';
-import { Teacher } from '../types';
-import { useData } from '../context/DataContext';
+import { createTeacher } from '../services/teacherService';
 
 
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 9).toUpperCase();
-}
 
 // Opções de titulação para o seletor customizado
 const TITULATIONS = ['Graduação', 'Especialização', 'Mestrado', 'Doutorado', 'Pós-Doutorado'];
@@ -65,32 +61,53 @@ export function TeacherFormScreen() {
     return Object.keys(newErrors).length === 0;
   }
 
-  const { addTeacher } = useData();
+
 
  async function handleSubmit() {
+
   if (!validate()) return;
+
   setLoading(true);
-  await new Promise(resolve => setTimeout(resolve, 800));
 
-  const newTeacher: Teacher = {
-    id: generateId(),
-    nome: form.nome,
-    titulacao: form.titulacao,
-    area: form.area,
-    tempoDocencia: Number(form.tempoDocencia),
-    email: form.email,
-  };
+  try {
 
-  addTeacher(newTeacher); // salva no contexto global
-  console.log('Professor cadastrado:', newTeacher);
+    const newTeacher =
+      await createTeacher({
 
-  setLoading(false);
-  Alert.alert(
-    'Sucesso! 👨‍🏫',
-    `Professor "${newTeacher.nome}" cadastrado com sucesso.`,
-    [{ text: 'OK', onPress: () => { setForm(EMPTY_FORM); setErrors({}); } }]
-  );
+        nome: form.nome,
+
+        titulacao: form.titulacao,
+
+        area: form.area,
+
+        tempoDocencia:
+          Number(form.tempoDocencia),
+
+        email: form.email,
+      });
+
+    Alert.alert(
+      "Sucesso 👨‍🏫",
+      `Professor "${newTeacher.nome}" cadastrado com sucesso!`
+    );
+
+    setForm(EMPTY_FORM);
+
+  } catch (error) {
+
+    console.log(error);
+
+    Alert.alert(
+      "Erro",
+      "Não foi possível cadastrar professor"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
 }
+
 
   return (
     <KeyboardAvoidingView

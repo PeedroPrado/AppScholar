@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, FlatList,
   TouchableOpacity, Alert, TextInput
 } from 'react-native';
-import { useData } from '../context/DataContext';
 import { useNavigation } from '@react-navigation/native';
 import { Teacher } from '../types';
 import { theme } from '../styles/theme';
 import { useSearch } from '../hooks/useSearch';
+import {
+  getTeachers,
+  deleteTeacher
+} from '../services/teacherService';
 
 // Badge colorido por titulação
 const TITLE_COLORS: Record<string, string> = {
@@ -71,9 +74,55 @@ function TeacherCard({
 }
 
 export function TeacherListScreen() {
-  const { teachers, removeTeacher } = useData();
   const navigation = useNavigation<any>();
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const { search, setSearch, filtered } = useSearch(teachers, ['nome', 'area', 'titulacao']);
+
+  useEffect(() => {
+
+  async function loadTeachers() {
+
+    try {
+
+      const data =
+        await getTeachers();
+
+      setTeachers(data);
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  }
+
+  loadTeachers();
+
+}, []);
+
+async function handleDelete(
+  id: string
+) {
+
+  try {
+
+    await deleteTeacher(id);
+
+    setTeachers(prev =>
+      prev.filter(teacher =>
+        teacher.id !== id
+      )
+    );
+
+  } catch (error) {
+
+    console.log(error);
+
+    Alert.alert(
+      "Erro",
+      "Não foi possível remover professor"
+    );
+  }
+}
 
   return (
     <View style={styles.container}>
@@ -95,7 +144,7 @@ export function TeacherListScreen() {
         data={filtered}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <TeacherCard teacher={item} onDelete={removeTeacher} />
+          <TeacherCard teacher={item} onDelete={handleDelete} />
         )}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
