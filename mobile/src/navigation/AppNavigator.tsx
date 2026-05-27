@@ -14,6 +14,7 @@ import { StudentListScreen } from '../screens/StudentListScreen';
 import { TeacherListScreen } from '../screens/TeacherListScreen';
 import { SubjectListScreen } from '../screens/SubjectListScreen';
 import { GradeFormScreen } from '../screens/GradeFormScreen';
+import { EditGradeScreen } from "../screens/EditGradeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,13 @@ export function AppNavigator() {
 
             <Stack.Screen name="Grades" component={GradesScreen} options={{ title: 'Boletim' }} />
             <Stack.Screen name="GradeForm" component={GradeFormScreen} options={{ title: 'Cadastrar Nota' }}
+            />
+            <Stack.Screen
+              name="EditGrade"
+              component={EditGradeScreen}
+              options={{
+                title: "Editar Nota"
+              }}
             />
           </>
         ) : (

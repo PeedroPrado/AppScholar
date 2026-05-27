@@ -28,4 +28,22 @@ export async function deleteGrade(
   await api.delete(
     `/notas/${id}`
   );
+
+}
+
+export async function updateGrade(
+  id: number,
+  data: {
+    nota1: number;
+    nota2: number;
+  }
+) {
+
+  const response =
+    await api.put(
+      `/notas/${id}`,
+      data
+    );
+
+  return response.data;
 }

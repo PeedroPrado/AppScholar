@@ -85,4 +85,36 @@ export class NotaController {
       });
     }
   }
+
+  static async update(
+  req: Request,
+  res: Response
+) {
+
+  try {
+
+    const id =
+    req.params.id as string;
+
+    const {
+      nota1,
+      nota2
+    } = req.body;
+
+    const nota =
+      await NotaService.update(
+        id,
+        nota1,
+        nota2
+      );
+
+    return res.json(nota);
+
+  } catch (error: any) {
+
+    return res.status(400).json({
+      erro: error.message
+    });
+  }
+}
 }

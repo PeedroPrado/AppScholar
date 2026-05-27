@@ -24,7 +24,9 @@ export class AlunoController {
 
     try {
 
-      const alunos = await AlunoService.findAll();
+      const alunos = await AlunoService.findAll(
+  (req as any).user
+  )
 
       return res.json(alunos);
 

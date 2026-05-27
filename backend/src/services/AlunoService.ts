@@ -110,17 +110,52 @@ export class AlunoService {
       return result.rows[0];
     }
 
-    static async findAll() {
+    static async findAll(user: any) {
 
-        const result =
-          await pool.query(`
-            SELECT *
-            FROM alunos
-            ORDER BY id DESC
-          `);
+  // PROFESSOR
 
-        return result.rows;
-    }
+  if (user.perfil === "teacher") {
+
+    const result =
+      await pool.query(`
+
+        SELECT DISTINCT
+
+          alunos.*
+
+        FROM alunos
+
+        INNER JOIN notas
+          ON notas.aluno_id = alunos.id
+
+        INNER JOIN disciplinas
+          ON disciplinas.id = notas.disciplina_id
+
+        INNER JOIN professores
+          ON professores.id = disciplinas.professor_id
+
+        WHERE professores.usuario_id = $1
+
+        ORDER BY alunos.nome ASC
+
+      `, [user.id]);
+
+    return result.rows;
+  }
+
+  // ADMIN
+
+  const result =
+    await pool.query(`
+
+      SELECT *
+      FROM alunos
+      ORDER BY nome ASC
+
+    `);
+
+  return result.rows;
+}
 
     static async delete(
       id: string

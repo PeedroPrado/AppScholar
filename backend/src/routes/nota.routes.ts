@@ -52,6 +52,20 @@ router.delete(
   ]),
 
   NotaController.delete
+)
+
+router.put(
+
+  "/notas/:id",
+
+  authMiddleware,
+
+  verifyRole([
+    "admin",
+    "teacher"
+  ]),
+
+  NotaController.update
 );
 
 export default router;

@@ -213,4 +213,48 @@ export class NotaService {
       [id]
     );
   }
+
+  static async update(
+  id: string,
+  nota1: number,
+  nota2: number
+) {
+
+  const media =
+    (nota1 + nota2) / 2;
+
+  const status =
+    media >= 6
+      ? "Aprovado"
+      : "Reprovado";
+
+  const result =
+    await pool.query(
+
+      `
+      UPDATE notas
+
+      SET
+
+        nota1 = $1,
+        nota2 = $2,
+        media = $3,
+        status = $4
+
+      WHERE id = $5
+
+      RETURNING *
+      `,
+
+      [
+        nota1,
+        nota2,
+        media,
+        status,
+        id
+      ]
+    );
+
+  return result.rows[0];
+}
 }
