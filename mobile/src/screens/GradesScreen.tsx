@@ -2,18 +2,14 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { Grade } from '../types';
 import { theme } from '../styles/theme';
+import { getGrades } from "../services/gradeService";
 
-const MOCK_GRADES: Grade [] = [
-    { id: '1', disciplina: 'Programação Mobile I', nota1: 8.5, nota2: 9.0, media: 8.75, situacao: 'Aprovado' },
-  { id: '2', disciplina: 'Banco de Dados',       nota1: 6.0, nota2: 7.5, media: 6.75, situacao: 'Aprovado' },
-  { id: '3', disciplina: 'Laboratório de Desenvolvimento Web',nota1: 4.0, nota2: 5.5, media: 4.75, situacao: 'Reprovado' },
-  { id: '4', disciplina: 'Redes de Computadores', nota1: 7.0, nota2: 8.0, media: 7.50, situacao: 'Em andamento' },
-];
+
 
 function GradeCard({ item }: {item: Grade }) {
     const statusColor =
-        item.situacao === 'Aprovado' ? theme.colors.success :
-        item.situacao === 'Reprovado' ? theme.colors.error :
+        item.status === 'Aprovado' ? theme.colors.success :
+        item.status === 'Reprovado' ? theme.colors.error :
         theme.colors.accent;
 
     return (
@@ -34,7 +30,7 @@ function GradeCard({ item }: {item: Grade }) {
         </View>
       </View>
       <View style={[styles.statusBadge, { backgroundColor: statusColor + '22' }]}>
-        <Text style={[styles.statusText, { color: statusColor }]}>{item.situacao}</Text>
+        <Text style={[styles.statusText, { color: statusColor }]}>{item.status}</Text>
       </View>
     </View>
   );
@@ -46,12 +42,31 @@ export function GradesScreen() {
 
   // useEffect simula o carregamento dos dados (delay de 1s)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setGrades(MOCK_GRADES);
+
+  async function loadGrades() {
+
+    try {
+
+      const data =
+        await getGrades();
+
+      console.log(data);
+
+      setGrades(data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    } finally {
+
       setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer); // cleanup do useEffect
-  }, []);
+    }
+  }
+
+  loadGrades();
+
+}, []);
 
   if (loading) {
     return (

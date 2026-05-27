@@ -30,13 +30,32 @@ CREATE TABLE IF NOT EXISTS disciplinas (
 );
 
 CREATE TABLE IF NOT EXISTS notas (
+
     id SERIAL PRIMARY KEY,
-    aluno_id INTEGER REFERENCES alunos(id),
-    disciplina_id INTEGER REFERENCES disciplinas(id),
-    nota1 NUMERIC,
-    nota2 NUMERIC,
-    media NUMERIC,
-    situacao VARCHAR(20)
+
+    aluno_id INTEGER NOT NULL,
+
+    disciplina_id INTEGER NOT NULL,
+
+    nota1 NUMERIC(4,2) NOT NULL,
+
+    nota2 NUMERIC(4,2) NOT NULL,
+
+    media NUMERIC(4,2) NOT NULL,
+
+    status VARCHAR(20) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_aluno
+      FOREIGN KEY (aluno_id)
+      REFERENCES alunos(id)
+      ON DELETE CASCADE,
+
+    CONSTRAINT fk_disciplina
+      FOREIGN KEY (disciplina_id)
+      REFERENCES disciplinas(id)
+      ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS usuarios (

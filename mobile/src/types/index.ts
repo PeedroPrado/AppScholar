@@ -43,11 +43,19 @@ export interface Subject {
     semestre: number; 
 }
 
-export interface Grade{
-    id: string;
-    disciplina: string;
-    nota1: number;
-    nota2: number;
-    media: number;
-    situacao: 'Aprovado' | 'Reprovado' | 'Em andamento';
+export interface Grade {
+
+  id: string;
+
+  aluno: string;
+
+  disciplina: string;
+
+  nota1: number;
+
+  nota2: number;
+
+  media: number;
+
+  status: 'Aprovado' | 'Reprovado';
 }
