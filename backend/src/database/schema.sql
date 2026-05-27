@@ -18,16 +18,23 @@ CREATE TABLE IF NOT EXISTS alunos (
     usuario_id INTEGER REFERENCES usuarios(id),
 
     nome VARCHAR(100),
+
     matricula VARCHAR(20),
+
     curso VARCHAR(100),
 
+    semestre INTEGER,
+
     email VARCHAR(100),
+
     telefone VARCHAR(20),
 
     cep VARCHAR(10),
+
     endereco VARCHAR(150),
 
     cidade VARCHAR(100),
+
     estado VARCHAR(50)
 );
 
@@ -106,7 +113,7 @@ VALUES (
 
     'admin@email.com',
 
-    '$2b$10$9iGvG0K0y4Y9x6XzQ6sY1e1mN5xY7rP4u2sP8JqF7dK2uV9xYwX1K',
+    '$2b$10$YNph0q43XuEEGRgi0aG3auuTtKQJisZVodZG/57Z1ftvfVtkNURVe',
 
     'admin'
 

@@ -21,6 +21,7 @@ const EMPTY_FORM = {
   endereco: '',
   cidade: '',
   estado: '',
+  semestre:''
 };
 
 export function StudentFormScreen() {
@@ -109,12 +110,13 @@ async function handleSubmit() {
       nome: form.nome,
       matricula: form.matricula,
       curso: form.curso,
+      semestre: Number(form.semestre),
       email: form.email,
       telefone: form.telefone,
       cep: form.cep,
       endereco: form.endereco,
       cidade: form.cidade,
-      estado: form.estado,
+      estado: form.estado
     });
 
     Alert.alert(
@@ -175,6 +177,17 @@ async function handleSubmit() {
             error={errors.curso}
             placeholder="Ex: Desenvolvimento de Software Multiplataforma"
             autoCapitalize="words"
+          />
+          <Input
+            label="Semestre"
+            value={form.semestre}
+            onChangeText={(value) =>
+              handleChange(
+                "semestre",
+                value
+              )
+            }
+            keyboardType="numeric"
           />
         </View>
 

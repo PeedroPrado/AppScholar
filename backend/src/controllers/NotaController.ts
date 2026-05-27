@@ -41,7 +41,9 @@ export class NotaController {
     try {
 
       const notas =
-        await NotaService.findAll();
+        await NotaService.findAll(
+          (req as any).user
+        );
 
       return res.json(notas);
 

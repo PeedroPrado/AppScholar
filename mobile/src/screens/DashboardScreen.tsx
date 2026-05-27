@@ -14,47 +14,68 @@ type MenuItem = {
 };
 
 const menuItems = [
+
   {
     label: "Cadastrar Alunos",
     icon: "👨‍🎓",
     route: "StudentForm",
-    perfis: ["admin"]
+    roles: ["admin"]
   },
+
   {
     label: "Lista de Alunos",
     icon: "📋",
     route: "StudentList",
-    perfis: ["admin", "professor"]
+    roles: ["admin", "teacher"]
   },
+
   {
     label: "Cadastrar Professores",
     icon: "👨‍🏫",
     route: "TeacherForm",
-    perfis: ["admin"]
+    roles: ["admin"]
   },
+
   {
     label: "Lista de Professores",
     icon: "📋",
     route: "TeacherList",
-    perfis: ["admin"]
+    roles: ["admin"]
   },
+
   {
     label: "Cadastrar Disciplinas",
     icon: "📚",
     route: "SubjectForm",
-    perfis: ["admin"]
+    roles: ["admin"]
   },
+
+  {
+    label: "Disciplinas",
+    icon: "📘",
+    route: "SubjectList",
+    roles: [
+      "admin",
+      "teacher",
+      "student"
+    ]
+  },
+
+  {
+    label: "Cadastrar Notas",
+    icon: "📝",
+    route: "GradeForm",
+    roles: [
+      "admin",
+      "teacher"
+    ]
+  },
+
   {
     label: "Boletim",
     icon: "📄",
     route: "Grades",
-    perfis: ["estudante"]
-  },
-  {
-    label: "Disciplinas",
-    icon: "📚",
-    route: "SubjectList",
-    perfis: ["admin", "professor", "estudante"]
+    roles: ["student"]
   }
 ];
 
@@ -93,7 +114,7 @@ export function DashboardScreen() {
         <View style={styles.grid}>
           {menuItems
             .filter(item =>
-            item.perfis.includes(user!.perfil as Perfil)
+            item.roles.includes(user!.perfil as Perfil)
           )
             .map((item) => (
               <TouchableOpacity

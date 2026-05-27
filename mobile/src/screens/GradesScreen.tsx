@@ -18,15 +18,15 @@ function GradeCard({ item }: {item: Grade }) {
       <View style={styles.row}>
         <View style={styles.gradeBox}>
           <Text style={styles.gradeLabel}>Nota 1</Text>
-          <Text style={styles.gradeValue}>{item.nota1.toFixed(1)}</Text>
+          <Text style={styles.gradeValue}>{Number(item.nota1).toFixed(1)}</Text>
         </View>
         <View style={styles.gradeBox}>
           <Text style={styles.gradeLabel}>Nota 2</Text>
-          <Text style={styles.gradeValue}>{item.nota2.toFixed(1)}</Text>
+          <Text style={styles.gradeValue}>{Number(item.nota2).toFixed(1)}</Text>
         </View>
         <View style={styles.gradeBox}>
           <Text style={styles.gradeLabel}>Média</Text>
-          <Text style={[styles.gradeValue, { color: statusColor }]}>{item.media.toFixed(1)}</Text>
+          <Text style={[styles.gradeValue, { color: statusColor }]}>{Number(item.media).toFixed(1)}</Text>
         </View>
       </View>
       <View style={[styles.statusBadge, { backgroundColor: statusColor + '22' }]}>

@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
-
 import { useAuth } from '../hooks/useAuth';
 import { LoginScreen } from '../screens/LoginScreen';
 import { DashboardScreen } from '../screens/DashboardScreen';
@@ -14,6 +13,7 @@ import { theme } from '../styles/theme';
 import { StudentListScreen } from '../screens/StudentListScreen';
 import { TeacherListScreen } from '../screens/TeacherListScreen';
 import { SubjectListScreen } from '../screens/SubjectListScreen';
+import { GradeFormScreen } from '../screens/GradeFormScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +52,8 @@ export function AppNavigator() {
             />
 
             <Stack.Screen name="Grades" component={GradesScreen} options={{ title: 'Boletim' }} />
+            <Stack.Screen name="GradeForm" component={GradeFormScreen} options={{ title: 'Cadastrar Nota' }}
+            />
           </>
         ) : (
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />

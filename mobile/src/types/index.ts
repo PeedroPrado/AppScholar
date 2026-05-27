@@ -11,6 +11,7 @@ export interface Student {
     nome: string;
     matricula: string; //matrícula
     curso: string;
+    semestre: number;
 
     email: string;
     telefone: string;

@@ -6,6 +6,7 @@ interface CreateAlunoDTO {
     nome: string;
     matricula: string;
     curso: string;
+    semestre: number;
 
     email: string;
     telefone: string;
@@ -68,6 +69,7 @@ export class AlunoService {
           nome,
           matricula,
           curso,
+          semestre,
           email,
           telefone,
           cep,
@@ -78,7 +80,7 @@ export class AlunoService {
         )
         VALUES (
           $1,$2,$3,$4,$5,
-          $6,$7,$8,$9,$10
+          $6,$7,$8,$9,$10,$11
         )
         RETURNING *
       `;
@@ -90,6 +92,7 @@ export class AlunoService {
         data.nome,
         data.matricula,
         data.curso,
+        data.semestre,
         data.email,
         data.telefone,
         data.cep,
