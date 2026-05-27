@@ -99,6 +99,35 @@ CREATE TABLE IF NOT EXISTS notas (
       ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS historico_escolar (
+
+    id SERIAL PRIMARY KEY,
+
+    aluno_id INTEGER NOT NULL,
+
+    disciplina_id INTEGER NOT NULL,
+
+    semestre INTEGER NOT NULL,
+
+    media NUMERIC(4,2) NOT NULL,
+
+    status VARCHAR(20) NOT NULL,
+
+    ano INTEGER NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_historico_aluno
+      FOREIGN KEY (aluno_id)
+      REFERENCES alunos(id)
+      ON DELETE CASCADE,
+
+    CONSTRAINT fk_historico_disciplina
+      FOREIGN KEY (disciplina_id)
+      REFERENCES disciplinas(id)
+      ON DELETE CASCADE
+);
+
 INSERT INTO usuarios (
 
     nome,

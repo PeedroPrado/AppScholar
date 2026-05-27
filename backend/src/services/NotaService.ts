@@ -91,6 +91,39 @@ export class NotaService {
     const result =
       await pool.query(query, values);
 
+      await pool.query(
+
+  `
+  INSERT INTO historico_escolar (
+
+    aluno_id,
+    disciplina_id,
+    semestre,
+    media,
+    status,
+    ano
+
+  )
+
+  VALUES ($1,$2,$3,$4,$5,$6)
+  `,
+
+  [
+
+    data.alunoId,
+
+    data.disciplinaId,
+
+    Number(alunoSemestre),
+
+    media,
+
+    status,
+
+    new Date().getFullYear()
+  ]
+);
+
     return result.rows[0];
   }
 
