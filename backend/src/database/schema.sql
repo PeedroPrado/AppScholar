@@ -12,11 +12,18 @@ CREATE TABLE IF NOT EXISTS alunos (
 );
 
 CREATE TABLE IF NOT EXISTS professores (
+
     id SERIAL PRIMARY KEY,
+
+    usuario_id INTEGER REFERENCES usuarios(id),
+
     nome VARCHAR(100),
     titulacao VARCHAR(100),
+
     area VARCHAR(100),
+
     tempo_docencia VARCHAR(50),
+
     email VARCHAR(100)
 );
 
@@ -58,12 +65,24 @@ CREATE TABLE IF NOT EXISTS notas (
       ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS usuarios (
+CREATE TABLE IF NOT EXISTS alunos (
+
     id SERIAL PRIMARY KEY,
+
+    usuario_id INTEGER REFERENCES usuarios(id),
+
     nome VARCHAR(100),
-    email VARCHAR(100) UNIQUE,
-    senha VARCHAR(255),
-    perfil VARCHAR(50)
+    matricula VARCHAR(20),
+    curso VARCHAR(100),
+
+    email VARCHAR(100),
+    telefone VARCHAR(20),
+
+    cep VARCHAR(10),
+    endereco VARCHAR(150),
+
+    cidade VARCHAR(100),
+    estado VARCHAR(50)
 );
 
 INSERT INTO usuarios (

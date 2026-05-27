@@ -47,6 +47,14 @@ export class NotaService {
       status,
     ];
 
+    const columns = await pool.query(`
+  SELECT column_name
+  FROM information_schema.columns
+  WHERE table_name = 'notas'
+`);
+
+console.log(columns.rows);
+
     const result =
       await pool.query(query, values);
 
