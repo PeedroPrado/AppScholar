@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRoutes from "./routes/auth.routes"
 import alunoRoutes from "./routes/aluno.routes";
 import professorRoutes from "./routes/professor.routes";
+import disciplinaRoutes from "./routes/disciplinas.routes";
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.get("/", (req, res) => {
 app.use("/api", authRoutes)
 app.use("/api", alunoRoutes)
 app.use("/api", professorRoutes)
+app.use("/api", disciplinaRoutes)
 
 export default app; 
