@@ -116,32 +116,29 @@ export class AlunoService {
 
   if (user.perfil === "teacher") {
 
-    const result =
-      await pool.query(`
+  const result =
+    await pool.query(`
 
-        SELECT DISTINCT
+      SELECT DISTINCT
 
-          alunos.*
+        alunos.*
 
-        FROM alunos
+      FROM alunos
 
-        INNER JOIN notas
-          ON notas.aluno_id = alunos.id
+      INNER JOIN disciplinas
+        ON disciplinas.semestre = alunos.semestre
 
-        INNER JOIN disciplinas
-          ON disciplinas.id = notas.disciplina_id
+      INNER JOIN professores
+        ON professores.id = disciplinas.professor_id
 
-        INNER JOIN professores
-          ON professores.id = disciplinas.professor_id
+      WHERE professores.usuario_id = $1
 
-        WHERE professores.usuario_id = $1
+      ORDER BY alunos.nome ASC
 
-        ORDER BY alunos.nome ASC
+    `, [user.id]);
 
-      `, [user.id]);
-
-    return result.rows;
-  }
+  return result.rows;
+}
 
   // ADMIN
 

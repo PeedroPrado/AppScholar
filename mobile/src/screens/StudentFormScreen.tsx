@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView,
-  Alert, KeyboardAvoidingView, Platform
+  Alert, KeyboardAvoidingView, Platform,
+  TouchableOpacity
 } from 'react-native';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
@@ -178,17 +179,48 @@ async function handleSubmit() {
             placeholder="Ex: Desenvolvimento de Software Multiplataforma"
             autoCapitalize="words"
           />
-          <Input
-            label="Semestre"
-            value={form.semestre}
-            onChangeText={(value) =>
-              handleChange(
-                "semestre",
-                value
-              )
-            }
-            keyboardType="numeric"
-          />
+          <Text style={styles.sectionTitle}>
+  📚 Semestre
+</Text>
+
+<View style={styles.semesterContainer}>
+
+  {[1,2,3,4,5,6].map(semester => (
+
+    <TouchableOpacity
+
+      key={semester}
+
+      style={[
+
+        styles.semesterButton,
+
+        Number(form.semestre) ===
+          semester &&
+
+        styles.semesterSelected
+      ]}
+
+      onPress={() =>
+
+        handleChange(
+          "semestre",
+          String(semester)
+        )
+      }
+    >
+
+      <Text
+        style={{
+          fontWeight: "700"
+        }}
+      >
+        {semester}º
+      </Text>
+
+    </TouchableOpacity>
+  ))}
+</View>
         </View>
 
         {/* Seção: Contato */}
@@ -312,4 +344,36 @@ const styles = StyleSheet.create({
   rowFlex: { flex: 3 },
   rowSmall: { flex: 1 },
   bottomSpacing: { height: theme.spacing.xl },
+  semesterContainer: {
+
+  flexDirection: "row",
+
+  flexWrap: "wrap",
+
+  gap: 10,
+
+  marginBottom: 16,
+},
+
+semesterButton: {
+
+  backgroundColor:
+    theme.colors.background,
+
+  padding: 12,
+
+  borderRadius: 8,
+
+  minWidth: 60,
+
+  alignItems: "center",
+},
+
+semesterSelected: {
+
+  borderWidth: 2,
+
+  borderColor:
+    theme.colors.primary,
+},
 });

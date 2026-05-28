@@ -124,7 +124,7 @@ export function GradeFormScreen() {
   const selectedStudent =
   students.find(
     student =>
-      student.id === studentId
+      Number(student.id) === Number(studentId)
   );
 
 const filteredSubjects =
@@ -136,7 +136,7 @@ const filteredSubjects =
           Number(selectedStudent.semestre)
       )
 
-    : [];
+    : subjects;
 
   return (
 

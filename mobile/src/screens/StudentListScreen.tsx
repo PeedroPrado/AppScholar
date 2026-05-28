@@ -12,43 +12,78 @@ import { getStudents, deleteStudent } from '../services/studentService';
 
 
 function StudentCard({
+
   student,
+
   onDelete,
-}: {
-  student: Student;
-  onDelete: (id: string) => void;
-}) {
+
+  user
+
+}: any) {
+
   function confirmDelete() {
+
     Alert.alert(
       'Remover aluno',
       `Deseja remover "${student.nome}"?`,
       [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Remover', style: 'destructive', onPress: () => onDelete(student.id) },
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        },
+
+        {
+          text: 'Remover',
+
+          style: 'destructive',
+
+          onPress: () =>
+            onDelete(student.id)
+        },
       ]
     );
   }
 
   return (
+
     <View style={styles.card}>
-      {/* Avatar com inicial do nome */}
+
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-          {student.nome.charAt(0).toUpperCase()}
+          {student.nome
+            .charAt(0)
+            .toUpperCase()}
         </Text>
       </View>
 
       <View style={styles.cardInfo}>
-        <Text style={styles.cardName}>{student.nome}</Text>
-        <Text style={styles.cardSub}>🎓 {student.matricula}</Text>
-        <Text style={styles.cardSub}>📚 {student.curso}</Text>
-        <Text style={styles.cardSub}>📧 {student.email}</Text>
-        <Text style={styles.cardSub}>📍 {student.cidade} - {student.estado}</Text>
+
+        <Text style={styles.cardName}>
+          {student.nome}
+        </Text>
+
+        <Text style={styles.cardSub}>
+          🎓 {student.matricula}
+        </Text>
+
       </View>
 
-      <TouchableOpacity onPress={confirmDelete} style={styles.deleteBtn}>
-        <Text style={styles.deleteIcon}>🗑</Text>
-      </TouchableOpacity>
+      {user?.perfil === "admin" && (
+
+        <TouchableOpacity
+
+          onPress={confirmDelete}
+
+          style={styles.deleteBtn}
+        >
+
+          <Text style={styles.deleteIcon}>
+            🗑
+          </Text>
+
+        </TouchableOpacity>
+      )}
+
     </View>
   );
 }
@@ -57,6 +92,7 @@ export function StudentListScreen() {
   const [students, setStudents] = useState<Student[]>([]);
   const navigation = useNavigation<any>();
   const { search, setSearch, filtered } = useSearch(students, ['nome', 'matricula']);
+  const { user } = useAuth();
 
   useEffect(() => {
 
@@ -124,7 +160,7 @@ async function handleDelete(id: string) {
         data={filtered}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <StudentCard student={item} onDelete={handleDelete} />
+          <StudentCard student={item} onDelete={handleDelete} user={user} />
         )}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
@@ -133,18 +169,22 @@ async function handleDelete(id: string) {
             <Text style={styles.emptyText}>
               {search ? 'Nenhum aluno encontrado' : 'Nenhum aluno cadastrado ainda'}
             </Text>
+            {user?.perfil === "admin" && (
             <TouchableOpacity
               style={styles.emptyBtn}
               onPress={() => navigation.navigate('StudentForm')}
             >
               <Text style={styles.emptyBtnText}>+ Cadastrar primeiro aluno</Text>
             </TouchableOpacity>
+            )}
           </View>
         }
       />
 
       {/* Botão flutuante para novo cadastro */}
-      {students.length > 0 && (
+      {students.length > 0 &&
+
+      user?.perfil === "admin" && (
         <TouchableOpacity
           style={styles.fab}
           onPress={() => navigation.navigate('StudentForm')}

@@ -4,7 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from '../hooks/useAuth';
 import { theme } from "../styles/theme";
 
-type Perfil = 'admin' | 'estudante' | 'professor';
+
+type Perfil = 'admin' | 'student' | 'teacher';
 
 type MenuItem = {
   label: string;

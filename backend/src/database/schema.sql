@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS disciplinas (
 
     curso VARCHAR(100),
 
-    semestre VARCHAR(20)
+    semestre INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS notas (
