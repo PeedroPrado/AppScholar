@@ -43,13 +43,29 @@ function SubjectCard({
         </Text>
       </View>
 
-      <View style={styles.cardInfo}>
-        <Text style={styles.cardName}>{subject.nome}</Text>
-        <Text style={styles.cardSub}>📚 {subject.curso}</Text>
-        <Text style={styles.cardSub}>🗓 Semestre {subject.semestre}</Text>
-        <Text style={styles.cardSub}>⏱ {subject.cargaHoraria}h</Text>
-        <Text style={styles.cardSub}>👨‍🏫 Professor ID: {subject.professorId}</Text>
-      </View>
+<View style={styles.cardInfo}>
+
+  <Text style={styles.cardName}>
+    {subject.nome}
+  </Text>
+
+  <Text style={styles.cardSub}>
+    📚 {subject.curso}
+  </Text>
+
+  <Text style={styles.cardSub}>
+    🗓 {subject.semestre}º semestre
+  </Text>
+
+  <Text style={styles.cardSub}>
+    ⏱ {subject.cargaHoraria}h
+  </Text>
+
+  <Text style={styles.cardSub}>
+    👨‍🏫 {subject.professor}
+  </Text>
+
+</View>
 
       <TouchableOpacity onPress={confirmDelete} style={styles.deleteBtn}>
         <Text style={styles.deleteIcon}>🗑</Text>

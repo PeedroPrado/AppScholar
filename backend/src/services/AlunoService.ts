@@ -145,9 +145,23 @@ export class AlunoService {
   const result =
     await pool.query(`
 
-      SELECT *
-      FROM alunos
-      ORDER BY nome ASC
+      SELECT
+
+  id,
+
+  nome,
+
+  matricula,
+
+  curso,
+
+  semestre,
+
+  email
+
+FROM alunos
+
+ORDER BY nome ASC
 
     `);
 

@@ -96,15 +96,30 @@ export class ProfessorService {
 
     static async findAll() {
 
-        const result =
-          await pool.query(`
-            SELECT *
-            FROM professores
-            ORDER BY id DESC
-          `);
+  const result = await pool.query(`
 
-        return result.rows;
-    }
+    SELECT
+
+      id,
+
+      nome,
+
+      titulacao,
+
+      area,
+
+      tempo_docencia,
+
+      email
+
+    FROM professores
+
+    ORDER BY nome ASC
+
+  `);
+
+  return result.rows;
+}
 
     static async delete(
       id: string

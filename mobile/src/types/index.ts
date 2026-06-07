@@ -39,7 +39,7 @@ export interface Subject {
     id: string;
     nome: string;
     cargaHoraria: number; //carga horária
-    professorId: string;
+    professor: string;
     curso: string;
     semestre: number; 
 }

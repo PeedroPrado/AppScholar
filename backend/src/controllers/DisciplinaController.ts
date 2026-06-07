@@ -22,21 +22,27 @@ export class DisciplinaController {
     }
 
     static async findAll(
-        req: Request,
-        res: Response
-    ) {
-        try{
-            const disciplina = await DisciplinaService.findAll();
-            return res.json(disciplina);
+  req: Request,
+  res: Response
+) {
+  try {
 
-        } catch (error){
-            console.log(error);
-            return res.status(500).json({
-                erro: "Erro ao buscar as disciplinas"
-            });
-        }
-    }
+    const disciplina =
+      await DisciplinaService.findAll(
+        (req as any).user
+      );
 
+    return res.json(disciplina);
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      erro: "Erro ao buscar as disciplinas"
+    });
+  }
+}
     static async delete(
         req: Request,
         res: Response

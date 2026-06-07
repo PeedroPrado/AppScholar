@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView,
   Alert, KeyboardAvoidingView, Platform,
@@ -9,6 +9,8 @@ import { Button } from '../components/Button';
 import { theme } from '../styles/theme';
 import { buscarCEP } from '../services/viaCepService';
 import { createStudent } from "../services/studentService";
+import { Picker } from "@react-native-picker/picker";
+import { getEstados, getCidades } from "../services/ibgeService";
 
 
 // Estado inicial limpo — facilita o reset do formulário
@@ -29,6 +31,22 @@ export function StudentFormScreen() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState<Partial<typeof EMPTY_FORM>>({});
   const [loading, setLoading] = useState(false);
+  const [estados, setEstados] = useState<any[]>([]);
+  const [cidades, setCidades] = useState<any[]>([]);
+
+  useEffect(() => {
+
+  async function loadEstados() {
+
+    const data =
+      await getEstados();
+
+    setEstados(data);
+  }
+
+  loadEstados();
+
+}, []);
 
   // Atualiza apenas o campo alterado, mantendo o restante intacto
   function handleChange(field: keyof typeof EMPTY_FORM, value: string) {
@@ -52,20 +70,62 @@ export function StudentFormScreen() {
 
       const data = await buscarCEP(cleaned);
 
-      if (!data.erro) {
+     if (!data.erro) {
 
-        setForm(prev => ({
-          ...prev,
-          endereco: data.logradouro,
-          cidade: data.localidade,
-          estado: data.uf,
-        }));
-      }
+  setForm(prev => ({
+    ...prev,
+    endereco: data.logradouro,
+    cidade: data.localidade,
+    estado: data.uf,
+  }));
+
+  const cidadesData =
+    await getCidades(data.uf);
+
+  setCidades(cidadesData);
+}
 
     } catch (error) {
 
       console.log(error);
     }
+  }
+}
+
+async function handleEstado(
+  uf: string
+) {
+
+  try {
+
+    console.log("UF:", uf);
+
+    handleChange(
+      "estado",
+      uf
+    );
+
+    const cidadesData =
+      await getCidades(uf);
+
+    console.log(
+      "CIDADES:",
+      cidadesData
+    );
+
+    setCidades(cidadesData);
+
+    handleChange(
+      "cidade",
+      ""
+    );
+
+  } catch (error) {
+
+    console.log(
+      "ERRO CIDADES:",
+      error
+    );
   }
 }
 
@@ -274,28 +334,67 @@ async function handleSubmit() {
           />
 
           {/* Cidade e Estado lado a lado */}
-          <View style={styles.row}>
-            <View style={styles.rowFlex}>
-              <Input
-                label="Cidade *"
-                value={form.cidade}
-                onChangeText={v => handleChange('cidade', v)}
-                error={errors.cidade}
-                placeholder="Jacareí"
-              />
-            </View>
-            <View style={styles.rowSmall}>
-              <Input
-                label="UF *"
-                value={form.estado}
-                onChangeText={v => handleChange('estado', v.toUpperCase())}
-                error={errors.estado}
-                placeholder="SP"
-                maxLength={2}
-                autoCapitalize="characters"
-              />
-            </View>
-          </View>
+          <Text style={styles.label}>
+  Estado *
+</Text>
+
+<View style={styles.pickerContainer}>
+  <Picker
+    selectedValue={form.estado}
+    onValueChange={handleEstado}
+  >
+    <Picker.Item
+      label="Selecione um estado"
+      value=""
+    />
+
+    {estados.map((estado) => (
+      <Picker.Item
+        key={estado.id}
+        label={`${estado.sigla} - ${estado.nome}`}
+        value={estado.sigla}
+      />
+    ))}
+  </Picker>
+</View>
+
+{!!errors.estado && (
+  <Text style={styles.errorText}>
+    {errors.estado}
+  </Text>
+)}
+
+<Text style={styles.label}>
+  Cidade *
+</Text>
+
+<View style={styles.pickerContainer}>
+  <Picker
+    selectedValue={form.cidade}
+    onValueChange={(value) =>
+      handleChange("cidade", value)
+    }
+  >
+    <Picker.Item
+      label="Selecione uma cidade"
+      value=""
+    />
+
+    {cidades.map((cidade) => (
+      <Picker.Item
+        key={cidade.id}
+        label={cidade.nome}
+        value={cidade.nome}
+      />
+    ))}
+  </Picker>
+</View>
+
+{!!errors.cidade && (
+  <Text style={styles.errorText}>
+    {errors.cidade}
+  </Text>
+)}
         </View>
 
         <Button title="Cadastrar Aluno" onPress={handleSubmit} loading={loading} />
@@ -375,5 +474,24 @@ semesterSelected: {
 
   borderColor:
     theme.colors.primary,
+},
+label: {
+  fontWeight: "700",
+  marginBottom: 6,
+  color: theme.colors.text,
+},
+
+pickerContainer: {
+  backgroundColor: "#fff",
+  borderRadius: 8,
+  marginBottom: 12,
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+},
+
+errorText: {
+  color: theme.colors.error,
+  marginBottom: 10,
+  fontSize: 12,
 },
 });
