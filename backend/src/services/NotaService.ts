@@ -52,6 +52,27 @@ export class NotaService {
         "Aluno e disciplina pertencem a semestres diferentes"
       );
     }
+    const notaExistente = await pool.query(
+
+  `
+  SELECT id
+  FROM notas
+  WHERE aluno_id = $1
+    AND disciplina_id = $2
+  `,
+
+  [
+    data.alunoId,
+    data.disciplinaId
+  ]
+);
+
+if (notaExistente.rows.length > 0) {
+
+  throw new Error(
+    "Já existe uma nota cadastrada para este aluno nesta disciplina"
+  );
+} 
     const media =
       (data.nota1 + data.nota2) / 2;
 

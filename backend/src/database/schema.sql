@@ -96,7 +96,13 @@ CREATE TABLE IF NOT EXISTS notas (
     CONSTRAINT fk_disciplina
       FOREIGN KEY (disciplina_id)
       REFERENCES disciplinas(id)
-      ON DELETE CASCADE
+      ON DELETE CASCADE,
+
+    CONSTRAINT unique_aluno_disciplina
+      UNIQUE (
+        aluno_id,
+        disciplina_id
+      )
 );
 
 CREATE TABLE IF NOT EXISTS historico_escolar (
