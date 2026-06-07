@@ -1,28 +1,43 @@
-# 📚 App Scholar — Gerenciamento Acadêmico Mobile
+# 📚 App Scholar — Sistema de Gestão Acadêmica Mobile
 
-Aplicativo mobile desenvolvido em **React Native + TypeScript** para gerenciamento acadêmico de uma instituição de ensino superior tecnológica.
-O sistema permite autenticação por perfil, cadastro de informações acadêmicas e visualização de boletins.
+Aplicativo mobile desenvolvido em **React Native + TypeScript** com backend em **Node.js + Express + PostgreSQL**, destinado ao gerenciamento acadêmico de instituições de ensino.
 
-Este projeto foi desenvolvido como atividade da disciplina **Programação para Dispositivos Móveis I**.
+O sistema permite autenticação por perfis, gerenciamento de alunos, professores, disciplinas e notas, além da consulta de boletins acadêmicos.
+
+Projeto desenvolvido para a disciplina **Programação para Dispositivos Móveis I** — FATEC Jacareí.
 
 ---
 
 # 🚀 Tecnologias Utilizadas
+
+## Frontend
 
 * React Native
 * Expo
 * TypeScript
 * React Navigation
 * Context API
-* AsyncStorage (persistência local)
-* Styled Components / Theme
-* Hooks (useState, useEffect, useContext)
+* Axios
+* AsyncStorage
+* React Native Picker
+
+## Backend
+
+* Node.js
+* Express
+* TypeScript
+* JWT
+* Bcrypt
+* PostgreSQL
+
+## APIs Externas
+
+* ViaCEP
+* IBGE Localidades
 
 ---
 
 # 👥 Perfis do Sistema
-
-O aplicativo possui três perfis de acesso:
 
 ## 👑 Administrador
 
@@ -31,27 +46,20 @@ Pode:
 * Cadastrar alunos
 * Cadastrar professores
 * Cadastrar disciplinas
-* Visualizar listas completas
+* Cadastrar notas
 * Remover registros
-* Visualizar boletins
+* Visualizar todas as informações do sistema
 
 ---
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=123
-DB_NAME=app_scholar
-
-JWT_SECRET=appscholar_secret
 
 ## 👨‍🏫 Professor
 
 Pode:
 
-* Visualizar lista de alunos cadastrados pelo admin
-* Visualizar disciplinas cadastradas pelo admin
-* Não pode cadastrar nem remover dados
+* Visualizar alunos relacionados às disciplinas que ministra
+* Visualizar suas disciplinas
+* Cadastrar notas
+* Consultar informações acadêmicas
 
 ---
 
@@ -59,238 +67,301 @@ Pode:
 
 Pode:
 
-* Visualizar suas disciplinas
-* Visualizar boletim (mock)
-* Não pode cadastrar dados
+* Visualizar disciplinas do seu semestre
+* Consultar boletim
+* Consultar notas e situação acadêmica
 
 ---
 
-# 🔐 Logins para Teste
-
-### Administrador
-
-```
-email: admin@fatec.sp.gov.br
-senha: 1234
-```
-
-### Professor
-
-```
-email: professor@fatec.sp.gov.br
-senha: 1234
-```
-
-### Aluno
-
-```
-email: aluno@fatec.sp.gov.br
-senha: 1234
-```
-
----
-
-# 📱 Funcionalidades Implementadas
+# 🔐 Funcionalidades Implementadas
 
 ## Autenticação
 
-* Login mock
-* Controle por perfil
+* Login com JWT
+* Controle de acesso por perfil
 * Persistência de sessão
+* Middleware de autorização
 
-## Dashboard
+---
 
-* Menu dinâmico por perfil
-* Informações do usuário logado
-* Logout
+## Alunos
 
-## Cadastro de Alunos
-
-* Nome
+* Cadastro completo
 * Matrícula
 * Curso
-* Email
-* Telefone
-* CEP (auto preenchimento)
-* Endereço
-* Cidade
-* Estado
-
-## Cadastro de Professores
-
-* Nome
-* Titulação
-* Área de atuação
-* Tempo de docência
-* Email
-
-## Cadastro de Disciplinas
-
-* Nome
-* Carga horária
-* Professor responsável
-* Curso
 * Semestre
+* Dados pessoais
+* Endereço
 
-## Listagens
+---
 
-* Lista de alunos
-* Lista de professores
-* Lista de disciplinas
-* Busca em tempo real
-* Remoção (apenas admin)
+## Professores
+
+* Cadastro completo
+* Área de atuação
+* Titulação
+* Tempo de docência
+
+---
+
+## Disciplinas
+
+* Cadastro de disciplinas
+* Associação com professor
+* Associação com semestre
+* Associação com curso
+
+---
+
+## Notas
+
+* Cadastro de notas
+* Cálculo automático de média
+* Situação (Aprovado/Reprovado)
+* Validação de semestre
+
+---
 
 ## Boletim
 
-* Disciplina
-* Nota 1
-* Nota 2
-* Média
-* Situação
-* Dados mockados
+* Visualização individual
+* Média por disciplina
+* Situação acadêmica
 
-## Persistência
+---
 
-* Dados salvos com AsyncStorage
-* Mantém dados entre logins
-* Compartilhamento entre perfis
+## Integrações Externas
+
+### ViaCEP
+
+* Busca automática do endereço pelo CEP
+
+### IBGE
+
+* Carregamento de estados
+* Carregamento de municípios
+
+---
+
+# 🗄️ Banco de Dados
+
+O sistema utiliza PostgreSQL com as seguintes entidades:
+
+* Usuários
+* Alunos
+* Professores
+* Disciplinas
+* Notas
+* Histórico Escolar
 
 ---
 
 # 📂 Estrutura do Projeto
 
-```
-src
- ├── components
- ├── context
- │   ├── AuthContext
- │   └── DataContext
- ├── screens
- │   ├── LoginScreen
- │   ├── DashboardScreen
- │   ├── StudentFormScreen
- │   ├── StudentListScreen
- │   ├── TeacherFormScreen
- │   ├── TeacherListScreen
- │   ├── SubjectFormScreen
- │   ├── SubjectListScreen
- │   └── GradesScreen
- ├── navigation
- ├── styles
- └── types
+```text
+AppScholar/
+
+├── backend/
+│   ├── src/
+│   │   ├── controllers
+│   │   ├── services
+│   │   ├── middlewares
+│   │   ├── routes
+│   │   ├── database
+│   │   └── server.ts
+│
+├── mobile/
+│   ├── src/
+│   │   ├── screens
+│   │   ├── components
+│   │   ├── services
+│   │   ├── context
+│   │   ├── hooks
+│   │   ├── navigation
+│   │   ├── styles
+│   │   └── types
 ```
 
 ---
 
-# ▶️ Como Rodar o Projeto
+# ⚙️ Configuração do Backend
 
-## 1. Clonar repositório
+Crie um arquivo `.env` na pasta backend:
 
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=123
+DB_NAME=app_scholar
+
+JWT_SECRET=appscholar_secret
 ```
-git clone https://github.com/seu-repositorio/AppScholar.git
+
+---
+
+# ▶️ Como Executar o Projeto
+
+## 1. Clonar o repositório
+
+```bash
+git clone https://github.com/PeedroPrado/AppScholar.git
 ```
 
-## 2. Entrar na pasta
+---
 
-```
-cd AppScholar
+## 2. Backend
+
+Entrar na pasta:
+
+```bash
+cd backend
 ```
 
-## 3. Instalar dependências
+Instalar dependências:
 
-```
+```bash
 npm install
 ```
 
-## 4. Instalar AsyncStorage
+Executar:
 
-```
-npx expo install @react-native-async-storage/async-storage
+```bash
+npm run dev
 ```
 
-## 5. Rodar projeto
+Servidor:
 
+```text
+http://localhost:3000
 ```
+
+---
+
+## 3. Mobile
+
+Entrar na pasta:
+
+```bash
+cd mobile
+```
+
+Instalar dependências:
+
+```bash
+npm install
+```
+
+Executar:
+
+```bash
 npx expo start
 ```
 
 ---
 
-# 📱 Executar no celular
+# 📡 Configuração do IP da API
 
-* Instale **Expo Go**
-* Escaneie o QR Code
-* O app abrirá automaticamente
+Durante o desenvolvimento, o aplicativo consome o backend utilizando o IP local da máquina.
 
----
+Arquivo:
 
-# 🧪 Como Testar
+```text
+mobile/src/services/api.ts
+```
 
-## Teste Admin
+Exemplo:
 
-1. Login como admin
-2. Cadastrar aluno
-3. Cadastrar professor
-4. Cadastrar disciplina
-5. Sair
-6. Entrar como professor
-7. Verificar dados
+```ts
+export const api = axios.create({
+  baseURL: "http://192.168.0.100:3000/api"
+});
+```
 
----
+⚠️ Importante:
 
-## Teste Professor
+Sempre que o computador mudar de rede ou receber um novo IP, será necessário atualizar o endereço no arquivo `api.ts`.
 
-1. Login professor
-2. Ver lista alunos
-3. Ver disciplinas
-4. Confirmar que não pode cadastrar
+Para descobrir o IP:
 
----
+### Windows
 
-## Teste Aluno
+```bash
+ipconfig
+```
 
-1. Login aluno
-2. Ver disciplinas
-3. Ver boletim
-4. Confirmar que não pode cadastrar
+Utilize o valor exibido em:
 
----
+```text
+IPv4 Address
+```
 
-# 💾 Persistência de Dados
+Exemplo:
 
-Os dados são armazenados localmente utilizando:
+```text
+192.168.0.100
+```
 
-* AsyncStorage
-* Context API
+E atualize:
 
-Os dados permanecem salvos mesmo após:
+```ts
+baseURL: "http://192.168.0.100:3000/api"
+```
 
-* logout
-* fechar app
-* trocar perfil
+O celular e o computador devem estar conectados à mesma rede Wi-Fi.
 
 ---
 
-# 🔜 Parte 2 (Back-end)
+# 🧪 Usuário Administrador
 
-Na próxima etapa o app será conectado a:
+Criado automaticamente pelo banco:
 
-* Node.js
-* Express
-* PostgreSQL
-* API REST
+```text
+Email:
+admin@email.com
 
-O AsyncStorage será substituído por requisições HTTP.
+Senha:
+123456
+```
+
+Professores e alunos são criados pelo administrador.
+
+---
+
+# 📱 Execução no Celular
+
+1. Instale o Expo Go
+2. Execute:
+
+```bash
+npx expo start
+```
+
+3. Escaneie o QR Code
+4. Faça login
+
+---
+
+# 🔒 Regras de Negócio
+
+* Alunos visualizam apenas disciplinas do próprio semestre
+* Professores visualizam apenas disciplinas sob sua responsabilidade
+* Notas só podem ser lançadas para disciplinas do mesmo semestre do aluno
+* Apenas administradores podem cadastrar alunos, professores e disciplinas
 
 ---
 
 # 👨‍💻 Autor
 
 Pedro Henrique Prado de Novaes
+
 FATEC Jacareí — Desenvolvimento de Software Multiplataforma
+
+GitHub:
+https://github.com/PeedroPrado
 
 ---
 
 # 📄 Licença
 
-Projeto acadêmico para fins educacionais.
+Projeto acadêmico desenvolvido para fins educacionais.
