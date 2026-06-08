@@ -5,7 +5,7 @@ Aplicativo mobile desenvolvido em **React Native + TypeScript** com backend em *
 O sistema permite autenticação por perfis, gerenciamento de alunos, professores, disciplinas e notas, além da consulta de boletins acadêmicos.
 
 Projeto desenvolvido para a disciplina **Programação para Dispositivos Móveis I** — FATEC Jacareí.
-NÃO FUNCIONA NA WEB, APENAS PELO CELULAR.
+** FUNCIONA NA WEB, APENAS PELO CELULAR.
 
 ---
 
