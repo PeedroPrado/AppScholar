@@ -1,32 +1,11 @@
-import React, {
-  useState
-} from "react";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
 
-import {
-  View,
-  Text,
-  StyleSheet,
-  Alert
-} from "react-native";
-
-import {
-  useRoute,
-  useNavigation
-} from "@react-navigation/native";
-
-import { Input }
-from "../components/Input";
-
-import { Button }
-from "../components/Button";
-
-import { theme }
-from "../styles/theme";
-
-import {
-  updateGrade
-}
-from "../services/gradeService";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
+import { theme } from "../styles/theme";
+import { updateGrade } from "../services/gradeService";
 
 export function EditGradeScreen() {
 

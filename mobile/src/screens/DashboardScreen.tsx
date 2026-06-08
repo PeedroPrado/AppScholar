@@ -71,6 +71,15 @@ const menuItems = [
       "teacher"
     ]
   },
+  {
+  label: "Gerenciar Notas",
+  icon: "📋",
+  route: "GradeList",
+  roles: [
+    "admin",
+    "teacher"
+  ]
+},
 
   {
     label: "Boletim",

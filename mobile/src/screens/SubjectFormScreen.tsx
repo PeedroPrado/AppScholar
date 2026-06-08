@@ -12,7 +12,14 @@ import { createSubject }
   import { getTeachers }
   from "../services/teacherService";
 
-const SEMESTERS = ['1º Semestre', '2º Semestre', '3º Semestre', '4º Semestre', '5º Semestre', '6º Semestre'];
+const SEMESTERS = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6"
+];
 
 const EMPTY_FORM = {
   nome: '',
@@ -258,7 +265,7 @@ export function SubjectFormScreen() {
                   }}
                 >
                   <Text style={[styles.semesterChipText, form.semestre === s && styles.semesterChipTextSelected]}>
-                    {s}
+                    {s}º Semestre
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -279,7 +286,9 @@ export function SubjectFormScreen() {
               ) : null}
               {form.semestre ? (
                 <View style={styles.previewBadge}>
-                  <Text style={styles.previewBadgeText}>📅 {form.semestre}</Text>
+                  <Text style={styles.previewBadgeText}>
+  📅 {form.semestre}º Semestre
+</Text>
                 </View>
               ) : null}
               {selectedTeacher ? (

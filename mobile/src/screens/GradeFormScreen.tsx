@@ -39,8 +39,18 @@ export function GradeFormScreen() {
         const studentsData =
           await getStudents();
 
+        console.log(
+          "ALUNOS",
+          studentsData
+        )
+
         const subjectsData =
           await getSubjects();
+
+        console.log(
+          "DISCIPLINAS",
+          subjectsData
+        );
 
         setStudents(studentsData);
 
@@ -129,13 +139,20 @@ export function GradeFormScreen() {
 
 const filteredSubjects =
   selectedStudent
+    ? subjects.filter(subject => {
 
-    ? subjects.filter(
-        subject =>
+        console.log(
+          "Comparando:",
+          subject.nome,
+          subject.semestre,
+          selectedStudent.semestre
+        );
+
+        return (
           Number(subject.semestre) ===
           Number(selectedStudent.semestre)
-      )
-
+        );
+      })
     : subjects;
 
   return (
